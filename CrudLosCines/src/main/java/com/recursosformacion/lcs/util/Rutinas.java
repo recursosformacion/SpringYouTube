@@ -76,6 +76,14 @@ public class Rutinas {
 			return valorActual;
 		}
 	}
+	
+	static public <T> T nuevoSiNoVacioG(T valorActual, T valorNuevo) {
+		if (Objects.nonNull(valorNuevo) ) {
+			return valorNuevo;
+		} else {
+			return valorActual;
+		}
+	}
 
 	static public int nuevoSiNoVacio(int valorActual, int valorNuevo) {
 		if (Objects.nonNull(valorNuevo)) {

@@ -7,7 +7,11 @@
 4. [Añadiendo seguridad con Spring Security] (#incorporando-spring-security)
 
 ### El desarrollo
-La primera parte, sera crear un modulo con las validaciones necesarias, y, a continuacion, realizaremos todos los test del modulo de validacion; a continuacion, desarrollamos de una aplicacion CRUD de 4 tablas que responderá con RESTFULL
+**Rama 000-base**
+La primera parte, sera crear un modulo con las validaciones necesarias, y, a continuacion, realizaremos todos los test del modulo de validacion; 
+
+**Rama 010-crud**
+a continuacion, desarrollamos de una aplicacion CRUD de 4 tablas que responderá con RESTFULL
 * CINE – Lista de cines con datos generales
 * PROGRAMA – Programa que tiene un cine en un momento dado
 * ENTRADA – Entradas vendidas con ubicación física y propietario
