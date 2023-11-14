@@ -14,6 +14,7 @@ class RutinasTest {
 
 	String STRING_NULA;
 	final String STRING_VACIA = "";
+	final String STRING_CON_DATOS = "Hola";
 	
 
 	final String CORREO_ELECTRONICO_CORRECTO = "migarcia@recursosformacion.com";
@@ -21,7 +22,7 @@ class RutinasTest {
 	final String CORREO_ELECTRONICO_ERRONEO_2 = "migarcia@recursosformacion";
 	final String CORREO_ELECTRONICO_ERRONEO_3 = "@recursosformacion.com";
 	final String CORREO_ELECTRONICO_ERRONEO_4 = "migarcia@";
-
+	
 	final String NUMERO_DNI_OK = "12.345.678-Z";
 	final String NUMERO_DNI_ERROR_LETRA = "12.345.678-Ñ";
 	final String NUMERO_DNI_ERROR_FORM_CORTO = "12.2.678-A";
@@ -29,14 +30,6 @@ class RutinasTest {
 	final String NUMERO_DNI_ERROR_FORM_LARGO = "123.456.678-A";
 	final String NUMERO_DNI_ERROR_FORM_ERR = "12345678A";
 	final String NUMERO_DNI_ERROR_FORM_ERR2 = "12.345.678.A";
-
-	final int NUMERO_INT = 0;
-	final int NUMERO_INT_NEGATIVO = -90000000;
-	final int NUMERO_INT_POSITIVO = 800000000;
-
-	final double NUMERO_DOUBLE = 0.0;
-	final double NUMERO_DOUBLE_NEGATIVO = -1764.8889;
-	final double NUMERO_DOUBLE_POSITIVO = 86594.6442;
 
 	final LocalDate AHORA = LocalDate.now();
 	final LocalDate MANIANA = LocalDate.now().plusDays(1);;
@@ -59,8 +52,12 @@ class RutinasTest {
 
 	@Test
 	void testIsVacio() {
-		assertAll(() -> assertTrue(Rutinas.isVacio(STRING_NULA)), () -> assertTrue(Rutinas.isVacio(STRING_VACIA)));
-	}
+		assertAll(
+				() -> assertTrue(Rutinas.isVacio(STRING_NULA)),
+                () -> assertTrue(Rutinas.isVacio(STRING_VACIA)),
+                () -> assertFalse(Rutinas.isVacio(STRING_CON_DATOS))
+                );
+    }
 
 	@Test
 	void testIsEmailValido() {
@@ -90,9 +87,11 @@ class RutinasTest {
 		String c ="Hola";
 		String res="original";
 			
-		assertEquals(Rutinas.nuevoSiNoVacio(res,a), "original");
-		assertEquals(Rutinas.nuevoSiNoVacio(res,b), "original");
-		assertEquals(Rutinas.nuevoSiNoVacio(res,c), "Hola");
+		assertAll(
+				() -> assertEquals(Rutinas.nuevoSiNoVacio(res,a), "original"),
+                () -> assertEquals(Rutinas.nuevoSiNoVacio(res,b), "original"),
+                () -> assertEquals(Rutinas.nuevoSiNoVacio(res,c), "Hola")
+				);
 	}
 
 	@Test
@@ -101,8 +100,10 @@ class RutinasTest {
 		Integer c =10;
 		Integer res=7;
 			
-		assertEquals(Rutinas.nuevoSiNoVacio(res,a), 7);
-		assertEquals(Rutinas.nuevoSiNoVacio(res,c), 10);
+		assertAll(
+				() -> assertEquals(Rutinas.nuevoSiNoVacio(res,a), 7),
+				() -> assertEquals(Rutinas.nuevoSiNoVacio(res,c), 10)
+				);
 	}
 
 	@Test
@@ -111,8 +112,10 @@ class RutinasTest {
 		LocalDate c = AHORA;
 		LocalDate res = MANIANA;
 			
-		assertEquals(Rutinas.nuevoSiNoVacio(res,a), MANIANA);
-		assertEquals(Rutinas.nuevoSiNoVacio(res,c), AHORA);
+		assertAll(
+				() -> assertEquals(Rutinas.nuevoSiNoVacio(res,a), MANIANA),
+				() -> assertEquals(Rutinas.nuevoSiNoVacio(res,c), AHORA)
+				);
 	
 	}
 
@@ -122,8 +125,10 @@ class RutinasTest {
 		Long c =10L;
 		Long res=7L;
 			
-		assertEquals(Rutinas.nuevoSiNoVacio(res,a), 7L);
-		assertEquals(Rutinas.nuevoSiNoVacio(res,c), 10L);
+		assertAll(
+				() -> assertEquals(Rutinas.nuevoSiNoVacio(res,a), 7L),
+				() -> assertEquals(Rutinas.nuevoSiNoVacio(res,c), 10L)
+				);
 	}
 
 	@Test
@@ -132,8 +137,10 @@ class RutinasTest {
 		long c =10L;
 		long res=7L;
 			
-		assertEquals(Rutinas.nuevoSiNoVacio(res,a), 0L);
-		assertEquals(Rutinas.nuevoSiNoVacio(res,c), 10L);
+		assertAll(
+				() -> assertEquals(Rutinas.nuevoSiNoVacio(res,a), 7L),
+				() -> assertEquals(Rutinas.nuevoSiNoVacio(res,c), 10L)
+				);
 	}
 
 	@Test
@@ -143,9 +150,11 @@ class RutinasTest {
 		Object c ="Hola";
 		Object res="original";
 			
-		assertEquals(Rutinas.nuevoSiNoVacio(res,a), "original");
-		assertEquals(Rutinas.nuevoSiNoVacio(res,b), "");
-		assertEquals(Rutinas.nuevoSiNoVacio(res,c), "Hola");
+		assertAll(
+				() -> assertEquals(Rutinas.nuevoSiNoVacio(res,a), "original"),
+				() -> assertEquals(Rutinas.nuevoSiNoVacio(res,b), ""),
+				() -> assertEquals(Rutinas.nuevoSiNoVacio(res,c), "Hola")
+				);
 	}
 
 	@Test
@@ -157,8 +166,7 @@ class RutinasTest {
 		
 		assertAll(() -> assertTrue(Rutinas.isEmptyOrNull(colls)),
 				() -> assertTrue(Rutinas.isEmptyOrNull(listaS)), 
-				() -> assertTrue(Rutinas.isEmptyOrNull(listasCreada)),
-				
+				() -> assertTrue(Rutinas.isEmptyOrNull(listasCreada)),			
 				() -> assertFalse(Rutinas.isEmptyOrNull(listaNum)));
 				
 				

@@ -208,7 +208,7 @@ public class Rutinas {
 	 * @author: Miguel Garcia
 	 */
 	public static boolean isGreater(LocalDate fecha, LocalDate min) {
-		if (Rutinas.comparaFechas(fecha, min) == 1) {
+		if (Rutinas.comparaFechas(fecha, min) > 0) {
 			return true;
 		}
 		return false;
@@ -225,7 +225,7 @@ public class Rutinas {
 	 * @author: Miguel Garcia
 	 */
 	public static boolean isGreaterOrEqual(LocalDate fecha, LocalDate min) {
-		if (Rutinas.comparaFechas(fecha, min) == 1 || Rutinas.comparaFechas(fecha, min) == 0) {
+		if (Rutinas.comparaFechas(fecha, min) >= 0 || Rutinas.comparaFechas(fecha, min) == 0) {
 			return true;
 		}
 		return false;
@@ -242,7 +242,7 @@ public class Rutinas {
 	 * @author: Miguel Garcia
 	 */
 	public static boolean isLess(LocalDate fecha, LocalDate min) {
-		if (Rutinas.comparaFechas(fecha, min) == -1) {
+		if (Rutinas.comparaFechas(fecha, min) < 0) {
 			return true;
 		}
 		return false;
@@ -259,7 +259,7 @@ public class Rutinas {
 	 * @author: Miguel Garcia
 	 */
 	public static boolean isLessOrEqual(LocalDate fecha, LocalDate min) {
-		if (Rutinas.comparaFechas(fecha, min) == -1 ||Rutinas.comparaFechas(fecha, min) == 0 ) {
+		if (Rutinas.comparaFechas(fecha, min) <= 0 ||Rutinas.comparaFechas(fecha, min) == 0 ) {
 			return true;
 		}
 		return false;
