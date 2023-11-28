@@ -8,6 +8,7 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.http.HttpStatus;
 //import org.springframework.web.bind.WebDataBinder;
@@ -27,6 +28,7 @@ import com.recursosformacion.lcs.exception.DAOException;
 import com.recursosformacion.lcs.exception.DomainException;
 import com.recursosformacion.lcs.model.Cine;
 import com.recursosformacion.lcs.model.Entrada;
+import com.recursosformacion.lcs.model.EntradaValidate;
 import com.recursosformacion.lcs.modelDTO.EntradaDTO;
 import com.recursosformacion.lcs.service.CineService;
 import com.recursosformacion.lcs.service.EntradaService;
@@ -44,6 +46,9 @@ public class EntradaController {
 
 	@Autowired
 	private CineService cDaoCine;
+
+	@Autowired
+	private EntradaValidate validacion;
 
 //	@InitBinder
 //	protected void initBinder(WebDataBinder binder) {
@@ -105,37 +110,49 @@ public class EntradaController {
 	}
 
 	@PostMapping
-	public ResponseEntity<Entrada> alta(@Validated @RequestBody EntradaDTO c)
+	public ResponseEntity<Entrada> alta(@RequestBody Entrada c, BindingResult result)
 			throws DomainException, ControllerException, DAOException { // ID,NOMBRE,DESCRIPCION
 
-		Entrada e = convertirDTO(c);
-		e.setId_entrada(0l);
+		// Entrada e = convertirDTO(c);
 
-		System.out.println("En alta-" + e.toString());
-		e = cDao.insert(e);
-		if (e != null) {
-			System.out.println("En alta dada-" + e.getId_entrada() + "/" + e.toString());
-			cDaoCine.addEntrada(e);
-			// throw new DomainException("Mensaje de pruebas");
-			return ResponseEntity.ok(e);
-		} else {
-			throw new ControllerException("Error al hacer la insercion");
+		validacion.validate(c, result);
+		if (!result.hasErrors()) {
+
+			Entrada e = c;
+			e.setId_entrada(0l);
+
+			System.out.println("En alta-" + e.toString());
+			e = cDao.insert(e);
+			if (e != null) {
+				System.out.println("En alta dada-" + e.getId_entrada() + "/" + e.toString());
+				cDaoCine.addEntrada(e);
+				// throw new DomainException("Mensaje de pruebas");
+				return ResponseEntity.ok(e);
+			} else {
+				throw new ControllerException("Error al hacer la insercion");
+			}
 		}
+		throw new ControllerException(result.getAllErrors().toString());
+
 	}
 
 	@PutMapping
-	public ResponseEntity<Map<String, Object>> modificacion(@RequestBody EntradaDTO c)
+	public ResponseEntity<Map<String, Object>> modificacion(@RequestBody Entrada c, BindingResult result)
 			throws ControllerException, DomainException, DAOException {
+		validacion.validate(c, result);
+		if (!result.hasErrors()) {
 		Map<String, Object> map = new LinkedHashMap<String, Object>();
-		Entrada e = convertirDTO(c);
-		if (cDao.update(e)) {
+		if (cDao.update(c)) {
 			map.put("status", 1);
-			map.put("message", "Error al actualizar");
+			map.put("message", "Actualizacion OK");
 			return new ResponseEntity<>(map, HttpStatus.OK);
 		} else {
 			throw new ControllerException("Error al hacer la modificacion");
 
 		}
+		}
+		throw new ControllerException(result.getAllErrors().toString());
+
 	}
 
 	@DeleteMapping("/{id}")

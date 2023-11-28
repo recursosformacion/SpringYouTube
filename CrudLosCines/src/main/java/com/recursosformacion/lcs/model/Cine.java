@@ -3,6 +3,8 @@ package com.recursosformacion.lcs.model;
 import java.util.ArrayList;
 import java.util.List;
 
+
+
 import com.recursosformacion.lcs.model.interfaces.Modelo;
 import com.recursosformacion.lcs.util.Rutinas;
 
@@ -13,6 +15,9 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name = "Cine")
@@ -23,15 +28,19 @@ public class Cine implements Modelo {
 	private Long id_cine;
 
 	@Column(nullable = false, length = 50)
+	@Size(min=3, max=30, message = "El nombre del cine debe tener entre 3 y 30")
 	private String ci_nombre;
 
-	@Column(nullable = true, length = 100)
+	@Column(nullable = true, length = 100 )
+	@Size(min=3, max=100, message="el nombre de la calle debe tener entre 1 y 100")
 	private String ci_calle;
 
 	@Column(nullable = true, length = 100)
 	private String ci_barrio;
 
 	@Column(nullable = false)
+	@Min(value = 1, message = "La capacidad ha de ser mayor a 1")
+	@Max(value = 100, message = "La capacidad ha de ser menor de 100")
 	private int ci_capacidad;
 	
 	@ElementCollection
