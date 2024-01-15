@@ -1,6 +1,17 @@
-package com.recursosformacion.lcs.modelDTO;
+package com.recursosformacion.lcs.model_dto;
+
 
 import org.springframework.stereotype.Component;
+
+import com.recursosformacion.lcs.util.constraint.interfaces.CheckCineValidation;
+import com.recursosformacion.lcs.util.constraint.interfaces.CheckFechaFuturaValidation;
+import com.recursosformacion.lcs.util.constraint.interfaces.DniConstraint;
+
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 
 
@@ -8,16 +19,38 @@ import org.springframework.stereotype.Component;
 public class EntradaDTO {
 
 	
-	private Long id_entrada;	
+	private Long id_entrada;
+	
+	@NotNull
+	@CheckFechaFuturaValidation
 	private String ent_fecha;
+	
+	@NotNull(message = "Es necesario indicar el cine")
+	@CheckCineValidation
 	private Long ent_cine;
+	
+	@NotNull(message = "Es necesario indicar la fila")
+	@Min(value = 1, message = "Se ha de indicar una fila mayor que 0")
+    @Max(value = 100, message = "Se ha de indicar una fila inferior a 100")
 	private int ent_fila;
+	
+	@NotNull(message = "Es necesario indicar el asiento")
+	@Min(value = 1, message = "Se ha de indicar un asiento mayor que 0")
+    @Max(value = 100, message = "Se ha de indicar un asiento inferior a 100")
 	private int ent_numero;
+
+	@NotBlank
+	@Size(message = "Error en el identificador del cliente ¿DNI? '${validatedValue}' .Su longitud debe ser {min}", max = 12, min = 12)
+	@DniConstraint
 	private String idCliente;
+	
+
+	
 	
 	public EntradaDTO() {
 		super();
 	}
+	
 	public EntradaDTO(Long id_entrada, String ent_fecha, Long id_cine, int ent_numero, String idCliente) {
 		super();
 		this.id_entrada = id_entrada;

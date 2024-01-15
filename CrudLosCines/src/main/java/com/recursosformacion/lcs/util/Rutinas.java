@@ -30,6 +30,8 @@ public class Rutinas {
 	 * Longitud que debe tener todo DNI pasado a la aplicacion.
 	 */
 	private final static int LONGITUD_DNI = 12;
+	
+	public final static String FORMATO_FECHA = "dd/MM/yyyy";
 
 	/**
 	 * *******************************************************************************
@@ -280,7 +282,7 @@ public class Rutinas {
 		if (isVacio(fecha)) {
 			return false;
 		}
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern(FORMATO_FECHA);
 		Optional<LocalDate> date = Optional.empty();
 		try {
 			date = Optional.of(LocalDate.parse(fecha, formatter));
@@ -292,6 +294,13 @@ public class Rutinas {
 		System.out.println(fecha);
 		return false;
 
+	}
+	public static LocalDate fechaToLocalDate(String fecha) {
+		if (isVacio(fecha)) {
+			return LocalDate.now();
+		}
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern(FORMATO_FECHA);
+		return LocalDate.parse(fecha, formatter);
 	}
 
 	/**

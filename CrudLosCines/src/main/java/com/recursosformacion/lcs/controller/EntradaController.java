@@ -6,15 +6,11 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.http.HttpStatus;
-//import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-//import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -25,31 +21,30 @@ import org.springframework.web.bind.annotation.RestController;
 import com.recursosformacion.lcs.exception.ControllerException;
 import com.recursosformacion.lcs.exception.DAOException;
 import com.recursosformacion.lcs.exception.DomainException;
-import com.recursosformacion.lcs.model.Cine;
 import com.recursosformacion.lcs.model.Entrada;
-import com.recursosformacion.lcs.modelDTO.EntradaDTO;
+import com.recursosformacion.lcs.model_dto.EntradaDTO;
 import com.recursosformacion.lcs.service.CineService;
 import com.recursosformacion.lcs.service.EntradaService;
-//import com.recursosformacion.lcs.validate.EntradaDTOValidate;
 
-//import jakarta.validation.Valid;
+import jakarta.validation.Valid;
+
+
 
 @CrossOrigin
 @RestController
 @RequestMapping("/api/entrada")
 public class EntradaController {
 
-	@Autowired
-	private EntradaService cDao;
+	private final EntradaService cDao;
 
-	@Autowired
-	private CineService cDaoCine;
+	private final CineService cDaoCine;
 
-//	@InitBinder
-//	protected void initBinder(WebDataBinder binder) {
-//		binder.setValidator(new EntradaDTOValidate());
-//	}
+	EntradaController(EntradaService cDao, CineService cDaoCine){
+		this.cDao = cDao;
+		this.cDaoCine = cDaoCine;
+	}
 
+	
 	@GetMapping("/{id}")
 	public ResponseEntity<Map<String, Object>> leerUno(@PathVariable("id") String ids) throws ControllerException {
 		String mensaje = "";
@@ -93,11 +88,14 @@ public class EntradaController {
 	}
 
 	@GetMapping("/leerporid/{idCliente}")
-	public ResponseEntity<List<Entrada>> leerPorId(@PathVariable("idCliente") String id) throws ControllerException {
-
+	public ResponseEntity<Map<String, Object>> leerPorId(@PathVariable("idCliente") String id) throws ControllerException {
+		Map<String, Object> map = new LinkedHashMap<String, Object>();
 		List<Entrada> entradas = cDao.findByIdCliente(id);
 		if (!entradas.isEmpty()) {
-			return ResponseEntity.ok(entradas);
+			map.put("status", 1);
+			map.put("data", entradas);
+			return new ResponseEntity<>(map, HttpStatus.OK);
+			
 		} else {
 			throw new ControllerException("No existen datos");
 
@@ -105,19 +103,18 @@ public class EntradaController {
 	}
 
 	@PostMapping
-	public ResponseEntity<Entrada> alta(@Validated @RequestBody EntradaDTO c)
-			throws DomainException, ControllerException, DAOException { // ID,NOMBRE,DESCRIPCION
-
+	public ResponseEntity<Map<String, Object>> alta(@Valid @RequestBody EntradaDTO c  ) 
+									throws DomainException, ControllerException, DAOException { // ID,NOMBRE,DESCRIPCION
+		Map<String, Object> map = new LinkedHashMap<String, Object>();
 		Entrada e = convertirDTO(c);
 		e.setId_entrada(0l);
 
-		System.out.println("En alta-" + e.toString());
 		e = cDao.insert(e);
 		if (e != null) {
-			System.out.println("En alta dada-" + e.getId_entrada() + "/" + e.toString());
 			cDaoCine.addEntrada(e);
-			// throw new DomainException("Mensaje de pruebas");
-			return ResponseEntity.ok(e);
+			map.put("status", 1);
+			map.put("data", e);
+			return new ResponseEntity<>(map, HttpStatus.OK);
 		} else {
 			throw new ControllerException("Error al hacer la insercion");
 		}
@@ -130,7 +127,7 @@ public class EntradaController {
 		Entrada e = convertirDTO(c);
 		if (cDao.update(e)) {
 			map.put("status", 1);
-			map.put("message", "Error al actualizar");
+			map.put("message", "Actualizacion realizada");
 			return new ResponseEntity<>(map, HttpStatus.OK);
 		} else {
 			throw new ControllerException("Error al hacer la modificacion");
@@ -168,12 +165,8 @@ public class EntradaController {
 		e.setEnt_numero(d.getEnt_numero());
 		e.setEnt_fecha_str(d.getEnt_fecha());
 		e.setIdCliente(d.getIdCliente());
-		Optional<Cine> cineDB = (Optional<Cine>) cDaoCine.leerUno(d.getId_cine());
-		if (cineDB.isPresent()) {
-			e.setEnt_cine(cineDB.get().getId_cine());
-		} else {
-			throw new ControllerException("Cine no existe - " + d.getId_cine());
-		}
+		e.setEnt_cine(d.getEnt_cine());
+		
 		return e;
 	}
 

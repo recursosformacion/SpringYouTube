@@ -34,15 +34,11 @@ public class Entrada implements Modelo {
 	
 	@Column(nullable=false)
 	private String idCliente;
-	 
+	
+	@Column(nullable=false)
 	private Long ent_cine;
 	
-	public Long getEnt_cine() {
-		return ent_cine;
-	}
-	public void setEnt_cine(Long ent_cine) {
-		this.ent_cine = ent_cine;
-	}
+
 	public Entrada() {
 		super();
 	}
@@ -102,6 +98,14 @@ public class Entrada implements Modelo {
 	public void setEnt_fila(int i) {
 		this.ent_fila = i;
 	}
+	
+	public Long getEnt_cine() {
+		return ent_cine;
+	}
+	public void setEnt_cine(Long ent_cine) {
+		this.ent_cine = ent_cine;
+	}
+	
 	@Override
 	public String toString() {
 		return "Entrada [id_entrada=" + id_entrada + ", ent_fecha=" + ent_fecha + ", Cine=" + ent_cine + ", ent_numero="

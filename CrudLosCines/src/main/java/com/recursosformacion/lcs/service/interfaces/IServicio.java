@@ -14,7 +14,7 @@ public interface  IServicio<T, S> {
 
 	public T insert(T t) throws DomainException, DAOException ;
 	public boolean update(T t) throws DomainException, DAOException ;
-	public boolean deleteById(S s);
+	public boolean deleteById(S s) throws DAOException;
 	public List<T> listAll();
 	public Optional<T>leerUno(S s);
 }
