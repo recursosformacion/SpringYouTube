@@ -40,7 +40,8 @@ public class EntradaDTO {
 	private int ent_numero;
 
 	@NotBlank
-	@Size(message = "Error en el identificador del cliente ¿DNI? '${validatedValue}' .Su longitud debe ser {min}", max = 12, min = 12)
+	@Size(message = "Error en el identificador del cliente ¿DNI? '${validatedValue}' .Su longitud debe ser {min}",
+			  max = 12, min = 12)
 	@DniConstraint
 	private String idCliente;
 	

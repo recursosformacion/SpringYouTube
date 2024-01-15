@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class ControllerExceptionValidation {
 	
 	@ResponseStatus(code = HttpStatus.BAD_REQUEST)
-	//ExceptionHandler(value = {MethodArgumentNotValidException.class})
+	@ExceptionHandler(value = {MethodArgumentNotValidException.class})
 	public Map<String,Object> gestionValidaciones(MethodArgumentNotValidException ex) {
 		Map<String,Object> errores = new HashMap<String,Object>();
 		errores.put("status",900);
