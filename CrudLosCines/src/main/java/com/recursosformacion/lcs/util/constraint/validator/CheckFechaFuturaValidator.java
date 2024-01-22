@@ -15,13 +15,15 @@ public class CheckFechaFuturaValidator implements ConstraintValidator<CheckFecha
 	
 	@Override
 	public boolean isValid(String fecha, ConstraintValidatorContext ctx) {
-		if (!Rutinas.esFechaValida(fecha)) {
-			ctx.disableDefaultConstraintViolation();
+		if (null == fecha) {
+			return true;
+		}
+		ctx.disableDefaultConstraintViolation();
+		if (!Rutinas.esFechaValida(fecha)) {			
 			ctx.buildConstraintViolationWithTemplate( FECHA_FORMATO_ERRONEO).addConstraintViolation();
 			return false;
 		}
 		if (!Rutinas.isGreaterOrEqual(Rutinas.fechaToLocalDate(fecha), LocalDate.now())) {
-			ctx.disableDefaultConstraintViolation();
 			ctx.buildConstraintViolationWithTemplate( FECHA_INTERVALO).addConstraintViolation();
 			return false;
 		}

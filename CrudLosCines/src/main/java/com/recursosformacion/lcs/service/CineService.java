@@ -85,7 +85,7 @@ public class CineService implements IServicio<Cine, Long> {
 
 	public boolean addEntrada(Entrada entrada) throws DomainException, DAOException {
 
-		Optional<Cine> cineDBO = cineRepository.findById(entrada.getEnt_cine());
+		Optional<Cine> cineDBO = cineRepository.findById(entrada.getEntCine());
 		if (cineDBO.isEmpty()) {
 			throw new DAOException("El registro ya no existe");
 		}

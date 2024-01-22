@@ -1,10 +1,8 @@
 package com.recursosformacion.lcs.service;
 
 import java.util.List;
-
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.recursosformacion.lcs.exception.DAOException;
@@ -50,7 +48,7 @@ public class EntradaService implements IServicio<Entrada, Long> {
 		entradaDB.setEnt_fecha(Rutinas.nuevoSiNoVacio(entradaDB.getEnt_fecha(), entrada.getEnt_fecha()));
 		entradaDB.setEnt_fila(Rutinas.nuevoSiNoVacio(entradaDB.getEnt_fila(), entrada.getEnt_fila()));
 		entradaDB.setEnt_numero(Rutinas.nuevoSiNoVacio(entradaDB.getEnt_numero(), entrada.getEnt_numero()));
-		entradaDB.setEnt_cine(Rutinas.nuevoSiNoVacio(entradaDB.getEnt_cine(), entrada.getEnt_cine()));
+		entradaDB.setEntCine(Rutinas.nuevoSiNoVacio(entradaDB.getEntCine(), entrada.getEntCine()));
 
 		return entradaRepository.save(entradaDB) != null;
 	}
@@ -73,6 +71,10 @@ public class EntradaService implements IServicio<Entrada, Long> {
 	
 	public List<Entrada> findByIdCliente(String id){
 		return entradaRepository.findByIdCliente(id);
+	}
+	
+	public List<Entrada> findByEntCine(Long id){
+		return entradaRepository.findByEntCine(id);
 	}
 
 }

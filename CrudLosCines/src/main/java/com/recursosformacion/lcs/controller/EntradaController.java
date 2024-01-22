@@ -29,7 +29,6 @@ import com.recursosformacion.lcs.service.EntradaService;
 import jakarta.validation.Valid;
 
 
-
 @CrossOrigin
 @RestController
 @RequestMapping("/api/entrada")
@@ -101,6 +100,20 @@ public class EntradaController {
 
 		}
 	}
+	@GetMapping("/leerporcine/{idCine}")
+	public ResponseEntity<Map<String, Object>> leerporcine(@PathVariable("idCine") Long id) throws ControllerException {
+		Map<String, Object> map = new LinkedHashMap<String, Object>();
+		List<Entrada> entradas = cDao.findByEntCine(id);
+		if (!entradas.isEmpty()) {
+			map.put("status", 1);
+			map.put("data", entradas);
+			return new ResponseEntity<>(map, HttpStatus.OK);
+			
+		} else {
+			throw new ControllerException("No existen datos para cine " + id);
+
+		}
+	}
 
 	@PostMapping
 	public ResponseEntity<Map<String, Object>> alta(@Valid @RequestBody EntradaDTO c  ) 
@@ -121,7 +134,7 @@ public class EntradaController {
 	}
 
 	@PutMapping
-	public ResponseEntity<Map<String, Object>> modificacion(@RequestBody EntradaDTO c)
+	public ResponseEntity<Map<String, Object>> modificacion(@Valid @RequestBody EntradaDTO c)
 			throws ControllerException, DomainException, DAOException {
 		Map<String, Object> map = new LinkedHashMap<String, Object>();
 		Entrada e = convertirDTO(c);
@@ -165,7 +178,7 @@ public class EntradaController {
 		e.setEnt_numero(d.getEnt_numero());
 		e.setEnt_fecha_str(d.getEnt_fecha());
 		e.setIdCliente(d.getIdCliente());
-		e.setEnt_cine(d.getEnt_cine());
+		e.setEntCine(d.getEntCine());
 		
 		return e;
 	}

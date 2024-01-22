@@ -11,4 +11,5 @@ import com.recursosformacion.lcs.model.Entrada;
 public interface IEntrada extends JpaRepository<Entrada, Long>{
 
 	List<Entrada> findByIdCliente(String idCliente);
+	List<Entrada> findByEntCine(Long entCine);
 }

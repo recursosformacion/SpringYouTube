@@ -36,27 +36,27 @@ public class Entrada implements Modelo {
 	private String idCliente;
 	
 	@Column(nullable=false)
-	private Long ent_cine;
+	private Long entCine;
 	
 
 	public Entrada() {
 		super();
 	}
-	public Entrada(long id_entrada, LocalDate ent_fecha, Long ent_cine, int ent_fila, int ent_numero) {
+	public Entrada(long id_entrada, LocalDate ent_fecha, Long entCine, int ent_fila, int ent_numero) {
 		super();
 		setId_entrada(id_entrada);
 		setEnt_fecha(ent_fecha);
-		setEnt_cine(ent_cine);
+		setEntCine(entCine);
 		setEnt_numero(ent_numero);
 		setEnt_fila(ent_fila);
 	}
 	
 
-	public Entrada(long id_entrada, String ent_fecha_str,  Long ent_cine, int ent_fila, int ent_numero) {
+	public Entrada(long id_entrada, String ent_fecha_str,  Long entCine, int ent_fila, int ent_numero) {
 		super();
 		setId_entrada(id_entrada);
 		setEnt_fecha_str(ent_fecha_str);
-		setEnt_cine(ent_cine);
+		setEntCine(entCine);
 		setEnt_numero(ent_numero);
 		setEnt_fila(ent_fila);
 	}
@@ -99,16 +99,16 @@ public class Entrada implements Modelo {
 		this.ent_fila = i;
 	}
 	
-	public Long getEnt_cine() {
-		return ent_cine;
+	public Long getEntCine() {
+		return entCine;
 	}
-	public void setEnt_cine(Long ent_cine) {
-		this.ent_cine = ent_cine;
+	public void setEntCine(Long entCine) {
+		this.entCine = entCine;
 	}
 	
 	@Override
 	public String toString() {
-		return "Entrada [id_entrada=" + id_entrada + ", ent_fecha=" + ent_fecha + ", Cine=" + ent_cine + ", ent_numero="
+		return "Entrada [id_entrada=" + id_entrada + ", ent_fecha=" + ent_fecha + ", Cine=" + entCine + ", ent_numero="
 				+ ent_numero + ", idCliente=" + idCliente + "]";
 	}
 		

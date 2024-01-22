@@ -27,7 +27,7 @@ public class EntradaDTO {
 	
 	@NotNull(message = "Es necesario indicar el cine")
 	@CheckCineValidation
-	private Long ent_cine;
+	private Long entCine;
 	
 	@NotNull(message = "Es necesario indicar la fila")
 	@Min(value = 1, message = "Se ha de indicar una fila mayor que 0")
@@ -56,7 +56,7 @@ public class EntradaDTO {
 		super();
 		this.id_entrada = id_entrada;
 		this.ent_fecha = ent_fecha;
-		this.ent_cine = id_cine;
+		this.entCine = id_cine;
 		this.ent_numero = ent_numero;
 		this.idCliente = idCliente;
 	}
@@ -73,10 +73,10 @@ public class EntradaDTO {
 		this.ent_fecha = ent_fecha;
 	}
 	public Long getId_cine() {
-		return ent_cine;
+		return entCine;
 	}
 	public void setId_cine(Long id_cine) {
-		this.ent_cine = id_cine;
+		this.entCine = id_cine;
 	}
 	public int getEnt_numero() {
 		return ent_numero;
@@ -91,11 +91,11 @@ public class EntradaDTO {
 		this.idCliente = idCliente;
 	}
 	
-	public Long getEnt_cine() {
-		return ent_cine;
+	public Long getEntCine() {
+		return entCine;
 	}
-	public void setEnt_cine(Long ent_cine) {
-		this.ent_cine = ent_cine;
+	public void setEntCine(Long entCine) {
+		this.entCine = entCine;
 	}
 	public int getEnt_fila() {
 		return ent_fila;
@@ -105,7 +105,7 @@ public class EntradaDTO {
 	}
 	@Override
 	public String toString() {
-		return "EntradaDTO [id_entrada=" + id_entrada + ", ent_fecha=" + ent_fecha + ", id_cine=" + ent_cine
+		return "EntradaDTO [id_entrada=" + id_entrada + ", ent_fecha=" + ent_fecha + ", id_cine=" + entCine
 				+ ", ent_numero=" + ent_numero + ", idCliente=" + idCliente + "]";
 	}
 	

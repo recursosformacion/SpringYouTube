@@ -31,7 +31,7 @@ public class Rutinas {
 	 */
 	private final static int LONGITUD_DNI = 12;
 	
-	public final static String FORMATO_FECHA = "dd/MM/yyyy";
+	public final static String FORMATO_FECHA = Constantes.FORMATO_FECHA;
 
 	/**
 	 * *******************************************************************************
@@ -227,9 +227,10 @@ public class Rutinas {
 	 * @author: Miguel Garcia
 	 */
 	public static boolean isGreaterOrEqual(LocalDate fecha, LocalDate min) {
-		if (Rutinas.comparaFechas(fecha, min) == 1 || Rutinas.comparaFechas(fecha, min) == 0) {
+		if (Rutinas.comparaFechas(fecha, min) >= 0 ) {
 			return true;
 		}
+		System.out.println(fecha + "    -    " + min + "=>" + Rutinas.comparaFechas(fecha, min));
 		return false;
 	}
 	

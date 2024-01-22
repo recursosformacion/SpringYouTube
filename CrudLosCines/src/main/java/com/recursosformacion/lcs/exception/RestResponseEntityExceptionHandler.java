@@ -35,6 +35,7 @@ public class RestResponseEntityExceptionHandler {
 			org.springframework.web.bind.MissingRequestHeaderException.class,
 			org.springframework.web.bind.MissingServletRequestParameterException.class,
 			org.springframework.web.method.annotation.MethodArgumentTypeMismatchException.class,
+			java.lang.ArithmeticException.class,
 			org.springframework.http.converter.HttpMessageNotReadableException.class })
 	@ResponseBody
 	public ResponseEntity<Map<String, Object>> handleConflict(Exception ex) {
@@ -51,16 +52,18 @@ public class RestResponseEntityExceptionHandler {
 //	}
 
 	private ResponseEntity<Map<String, Object>> montaError(Exception ex, String mensaje, HttpStatus conflict) {
+//*********inicializacion************************************************************
 		Map<String, Object> map = new LinkedHashMap<String, Object>();
 		String miPaquete = this.getClass().getPackageName();
 		System.out.println(miPaquete);
-		/* *************************************************************************
-		 * obtener paquete base de spring.....
-		 */
+//********* Estableciendo el status de salida y el mensaje de error
+		
 		map.clear();
 		map.put("status", 0);
 		map.put("message", mensaje);
-		// getStackTrace se deberia filtrar por "className": "es.rf.tienda.
+		
+		/* *************************************************************************	
+		// getStackTrace se deberia filtrar por "className": "es.rf.tienda.*/
 		// Array de objetos
 		StackTraceElement[] ste = ex.getStackTrace();
 		StackTraceElement[] stack = Arrays.stream(ste)
@@ -69,6 +72,5 @@ public class RestResponseEntityExceptionHandler {
 				.toArray(StackTraceElement[]::new);
 		map.put("stacktrace", stack);
 		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.BAD_REQUEST);
-		//return map;
 	}
 }
