@@ -22,8 +22,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.recursosformacion.lcs.exception.ControllerException;
 import com.recursosformacion.lcs.exception.DAOException;
 import com.recursosformacion.lcs.exception.DomainException;
-import com.recursosformacion.lcs.model.Cine;
-import com.recursosformacion.lcs.service.CineService;
+import com.recursosformacion.lcs.persistence.entity.Cine;
+import com.recursosformacion.lcs.service.impl.CineServiceImpl;
 
 
 @CrossOrigin
@@ -32,7 +32,7 @@ import com.recursosformacion.lcs.service.CineService;
 public class CineController {
 	
 	@Autowired
-	private CineService cDao;
+	private CineServiceImpl cDao;
 	
 	@GetMapping("/{id}")
 	public ResponseEntity<Map<String, Object>> leerUno(@PathVariable("id") String ids) throws ControllerException {

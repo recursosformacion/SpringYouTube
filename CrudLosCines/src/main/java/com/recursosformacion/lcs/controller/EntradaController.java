@@ -21,10 +21,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.recursosformacion.lcs.exception.ControllerException;
 import com.recursosformacion.lcs.exception.DAOException;
 import com.recursosformacion.lcs.exception.DomainException;
-import com.recursosformacion.lcs.model.Entrada;
-import com.recursosformacion.lcs.model_dto.EntradaDTO;
-import com.recursosformacion.lcs.service.CineService;
-import com.recursosformacion.lcs.service.EntradaService;
+import com.recursosformacion.lcs.persistence.entity.Entrada;
+import com.recursosformacion.lcs.model.dto.EntradaDTO;
+import com.recursosformacion.lcs.service.impl.CineServiceImpl;
+import com.recursosformacion.lcs.service.impl.EntradaServiceImpl;
 
 import jakarta.validation.Valid;
 
@@ -34,11 +34,11 @@ import jakarta.validation.Valid;
 @RequestMapping("/api/entrada")
 public class EntradaController {
 
-	private final EntradaService cDao;
+	private final EntradaServiceImpl cDao;
 
-	private final CineService cDaoCine;
+	private final CineServiceImpl cDaoCine;
 
-	EntradaController(EntradaService cDao, CineService cDaoCine){
+	EntradaController(EntradaServiceImpl cDao, CineServiceImpl cDaoCine){
 		this.cDao = cDao;
 		this.cDaoCine = cDaoCine;
 	}

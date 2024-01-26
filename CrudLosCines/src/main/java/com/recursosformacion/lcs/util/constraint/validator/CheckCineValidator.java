@@ -1,6 +1,6 @@
 package com.recursosformacion.lcs.util.constraint.validator;
 
-import com.recursosformacion.lcs.repository.ICine;
+import com.recursosformacion.lcs.persistence.repository.ICine;
 import com.recursosformacion.lcs.util.constraint.interfaces.CheckCineValidation;
 
 import jakarta.validation.ConstraintValidator;

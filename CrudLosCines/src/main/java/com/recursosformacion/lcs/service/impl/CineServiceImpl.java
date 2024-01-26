@@ -1,4 +1,4 @@
-package com.recursosformacion.lcs.service;
+package com.recursosformacion.lcs.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,17 +6,17 @@ import java.util.Objects;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import com.recursosformacion.lcs.exception.DAOException;
 import com.recursosformacion.lcs.exception.DomainException;
-import com.recursosformacion.lcs.model.Cine;
-import com.recursosformacion.lcs.model.Entrada;
-import com.recursosformacion.lcs.repository.ICine;
-import com.recursosformacion.lcs.service.interfaces.IServicio;
+import com.recursosformacion.lcs.persistence.entity.Cine;
+import com.recursosformacion.lcs.persistence.entity.Entrada;
+import com.recursosformacion.lcs.persistence.repository.ICine;
+import com.recursosformacion.lcs.service.IService;
 import com.recursosformacion.lcs.util.Rutinas;
+import org.springframework.stereotype.Service;
 
 @Service
-public class CineService implements IServicio<Cine, Long> {
+public class CineServiceImpl implements IService<Cine, Long> {
 
 	@Autowired
 	private ICine cineRepository;

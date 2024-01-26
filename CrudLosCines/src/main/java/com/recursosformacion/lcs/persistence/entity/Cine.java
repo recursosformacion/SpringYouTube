@@ -1,9 +1,9 @@
-package com.recursosformacion.lcs.model;
+package com.recursosformacion.lcs.persistence.entity;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.recursosformacion.lcs.model.interfaces.Modelo;
+import com.recursosformacion.lcs.persistence.entity.interfaces.Modelo;
 import com.recursosformacion.lcs.util.Rutinas;
 
 import jakarta.persistence.Column;
