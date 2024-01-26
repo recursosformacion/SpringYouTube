@@ -1,14 +1,10 @@
 package com.recursosformacion.lcs.exception;
 
-public class DAOException extends Exception {
-	
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
-	public DAOException() {
-	}
+@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+public class DAOException extends RuntimeException {
 
 	public DAOException(String mensaje) {
 		super(mensaje);

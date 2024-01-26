@@ -1,4 +1,4 @@
-package com.recursosformacion.lcs.model_dto;
+package com.recursosformacion.lcs.model.dto;
 
 
 import org.springframework.stereotype.Component;

@@ -1,14 +1,13 @@
 package com.recursosformacion.lcs.exception;
 
-@SuppressWarnings("serial")
-public class DomainException extends Exception {
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
-	public DomainException() {
-	}
+@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+public class DomainException extends RuntimeException {
 
 	public DomainException(String mensaje) {
 		super(mensaje);
-
 	}
 
 }

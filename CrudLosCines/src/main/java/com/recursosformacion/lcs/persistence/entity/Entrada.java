@@ -1,8 +1,8 @@
-package com.recursosformacion.lcs.model;
+package com.recursosformacion.lcs.persistence.entity;
 
 import java.time.LocalDate;
 
-import com.recursosformacion.lcs.model.interfaces.Modelo;
+import com.recursosformacion.lcs.persistence.entity.interfaces.Modelo;
 import com.recursosformacion.lcs.util.Constantes;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.Column;

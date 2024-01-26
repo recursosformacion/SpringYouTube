@@ -1,10 +1,10 @@
-package com.recursosformacion.lcs.repository;
+package com.recursosformacion.lcs.persistence.repository;
 
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.recursosformacion.lcs.model.Entrada;
+import com.recursosformacion.lcs.persistence.entity.Entrada;
 
 
 
