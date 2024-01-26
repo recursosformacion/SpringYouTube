@@ -13,6 +13,9 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.DecimalMax;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Positive;
 
 @Entity
 @Table(name = "Cine")
@@ -26,12 +29,15 @@ public class Cine implements Modelo {
 	private String ci_nombre;
 
 	@Column(nullable = true, length = 100)
+	@NotEmpty
 	private String ci_calle;
 
 	@Column(nullable = true, length = 100)
 	private String ci_barrio;
 
 	@Column(nullable = false)
+	@Positive
+	@DecimalMax(value = "1000")
 	private int ci_capacidad;
 	
 	@ElementCollection

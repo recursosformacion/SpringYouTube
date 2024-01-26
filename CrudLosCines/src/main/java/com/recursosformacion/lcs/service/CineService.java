@@ -11,6 +11,7 @@ import com.recursosformacion.lcs.exception.DAOException;
 import com.recursosformacion.lcs.exception.DomainException;
 import com.recursosformacion.lcs.model.Cine;
 import com.recursosformacion.lcs.model.Entrada;
+import com.recursosformacion.lcs.model_dto.CineProjectionNombre;
 import com.recursosformacion.lcs.repository.ICine;
 import com.recursosformacion.lcs.service.interfaces.IServicio;
 import com.recursosformacion.lcs.util.Rutinas;
@@ -81,6 +82,10 @@ public class CineService implements IServicio<Cine, Long> {
 	public Optional<Cine> leerUno(Long id) {
 		return cineRepository.findById(id);
 
+	}
+	
+	public List<CineProjectionNombre> getAllCineProjectionNombre(){
+		return cineRepository.findAllCineProjectionNombre();
 	}
 
 	public boolean addEntrada(Entrada entrada) throws DomainException, DAOException {
