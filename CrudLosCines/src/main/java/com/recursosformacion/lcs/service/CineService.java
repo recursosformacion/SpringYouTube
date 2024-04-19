@@ -5,25 +5,43 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
+
 import com.recursosformacion.lcs.exception.DAOException;
 import com.recursosformacion.lcs.exception.DomainException;
-import com.recursosformacion.lcs.model.Cine;
-import com.recursosformacion.lcs.model.Entrada;
-import com.recursosformacion.lcs.model_dto.CineProjectionNombre;
+import com.recursosformacion.lcs.persistence.entity.Cine;
+import com.recursosformacion.lcs.persistence.entity.Entrada;
+import com.recursosformacion.lcs.model.dto.CineProjectionNombre;
 import com.recursosformacion.lcs.repository.ICine;
 import com.recursosformacion.lcs.service.interfaces.IServicio;
 import com.recursosformacion.lcs.util.Rutinas;
 
+import jakarta.validation.ConstraintViolationException;
+import jakarta.validation.Valid;
+
+
 @Service
+@Validated
 public class CineService implements IServicio<Cine, Long> {
 
-	@Autowired
-	private ICine cineRepository;
+	
+	private final ICine cineRepository;
 
+	public CineService(ICine cineRepository) {
+		this.cineRepository = cineRepository;
+	}
+	
+	public Cine validateInput(@Valid Cine cine) throws ConstraintViolationException, DomainException {
+		if (cine == null) {
+			throw new DomainException("El registro no es valido");
+		}
+		return cine;
+	}
+	
 	@Override
-	public Cine insert(Cine cine) throws DAOException {
+	public Cine insert(Cine c) throws DAOException, ConstraintViolationException, DomainException {
+		Cine cine = validateInput(c);
 		List<Long> list_entradas = cine.getCi_lista_entradas();
 		if (Rutinas.isEmptyOrNull(list_entradas)) {		
 			list_entradas = new ArrayList<Long>();
@@ -68,7 +86,6 @@ public class CineService implements IServicio<Cine, Long> {
 		} else {
 			throw new DAOException("El registro no es valido para actualizacion");
 		}
-		
 	}
 
 	@Override
@@ -103,6 +120,11 @@ public class CineService implements IServicio<Cine, Long> {
 		cineDB.setCi_lista_entradas(list_entradas);
 
 		return cineRepository.save(cineDB) != null;
+	}
+
+	@Override
+	public boolean existsById(Long s) {
+		return cineRepository.existsById(s);
 	}
 
 }

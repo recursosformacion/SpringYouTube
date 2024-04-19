@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.recursosformacion.lcs.exception.DAOException;
 import com.recursosformacion.lcs.exception.DomainException;
-import com.recursosformacion.lcs.model.Entrada;
+import com.recursosformacion.lcs.persistence.entity.Entrada;
 import com.recursosformacion.lcs.repository.IEntrada;
 import com.recursosformacion.lcs.service.interfaces.IServicio;
 import com.recursosformacion.lcs.util.Rutinas;
@@ -75,6 +75,12 @@ public class EntradaService implements IServicio<Entrada, Long> {
 	
 	public List<Entrada> findByEntCine(Long id){
 		return entradaRepository.findByEntCine(id);
+	}
+
+	@Override
+	public boolean existsById(Long s) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }

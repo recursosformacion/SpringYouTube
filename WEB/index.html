@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="styles.css">
+</head>
+<body>
+    <div class="punto-rojo"></div>
+    <script>
+        let puntoRojo = document.querySelector('.punto-rojo');
+
+        let tamaño = 20;
+        let creciendo = true;
+
+        // Actualiza el color del punto rojo cada 100 milisegundos
+        let color = 0;
+        setInterval(() => {
+            color = (color + 1) % 360;
+            puntoRojo.style.backgroundColor = `hsl(${color}, 100%, 50%)`;
+        }, 100);
+        
+        // Actualiza la posición del punto rojo cada 100 milisegundos
+        setInterval(() => {
+            if (creciendo) {
+                tamaño++;
+                if (tamaño >= 100) {
+                    creciendo = false;
+                }
+            } else {
+                tamaño--;
+                if (tamaño <= 20) {
+                    creciendo = true;
+                }
+            }
+
+            puntoRojo.style.width = `${tamaño}px`;
+            puntoRojo.style.height = `${tamaño}px`;
+        }, 100);
+    </script>
+</body>
+</html>

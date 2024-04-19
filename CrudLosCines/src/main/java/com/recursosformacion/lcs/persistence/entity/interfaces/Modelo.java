@@ -1,4 +1,4 @@
-package com.recursosformacion.lcs.model.interfaces;
+package com.recursosformacion.lcs.persistence.entity.interfaces;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 

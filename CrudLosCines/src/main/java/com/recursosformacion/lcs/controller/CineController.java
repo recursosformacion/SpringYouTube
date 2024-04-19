@@ -4,11 +4,12 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -18,18 +19,21 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.recursosformacion.lcs.exception.ControllerException;
 import com.recursosformacion.lcs.exception.DAOException;
 import com.recursosformacion.lcs.exception.DomainException;
-import com.recursosformacion.lcs.model.Cine;
-import com.recursosformacion.lcs.model_dto.CineProjectionNombre;
+import com.recursosformacion.lcs.persistence.entity.Cine;
+import com.recursosformacion.lcs.model.dto.CineDTO;
+import com.recursosformacion.lcs.model.dto.CineProjectionNombre;
 import com.recursosformacion.lcs.service.CineService;
 import com.recursosformacion.lcs.util.constraint.interfaces.CheckCineValidation;
 
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 
 @CrossOrigin
 @RestController
@@ -38,6 +42,9 @@ import jakarta.validation.Valid;
 public class CineController {
 
 	private final CineService cDao;
+	
+	@Autowired
+	private ModelMapper mapper;
 
 	CineController(CineService cDao) {
 		this.cDao = cDao;
@@ -59,12 +66,21 @@ public class CineController {
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity<Map<String, Object>> leerUno(@PathVariable("id") @CheckCineValidation Long id) throws ConstraintViolationException{		
+	public ResponseEntity<Map<String, Object>> leerUno(@CheckCineValidation() @PathVariable("id") Long id)
+			throws ConstraintViolationException, ControllerException {
 		Map<String, Object> map = new LinkedHashMap<String, Object>();
 		Optional<Cine> cineDB = cDao.leerUno(id);
-		map.put("status", 1);
-		map.put("data", cineDB.get());
-		return new ResponseEntity<>(map, HttpStatus.OK);
+		if (cineDB.isPresent()) {
+            // Convertir a DTO
+            CineDTO cineDTO = convertToDto(cineDB.get());
+            // Retornar el DTO
+            map.put("status", 1);
+            map.put("data", cineDTO);
+            return new ResponseEntity<>(map, HttpStatus.OK);
+        } else {
+            throw new ControllerException("No se encontro el registro");
+        }
+		
 	}
 
 	@GetMapping({ "", "/" })
@@ -73,9 +89,9 @@ public class CineController {
 		Map<String, Object> map = new LinkedHashMap<String, Object>();
 		List<Cine> cat = cDao.listAll();
 		if (!cat.isEmpty()) {
-			System.out.println(cat);
+			List<CineDTO> cDTO = cat.stream().map(cine -> convertToDto(cine)).collect(Collectors.toList());		
 			map.put("status", 1);
-			map.put("data", cat);
+			map.put("data", cDTO);
 			return new ResponseEntity<>(map, HttpStatus.OK);
 		} else {
 			throw new ControllerException("No existen datos");
@@ -83,54 +99,61 @@ public class CineController {
 	}
 
 	@PostMapping
-	public ResponseEntity<Map<String, Object>> alta(@Valid @RequestBody Cine c)
+	public ResponseEntity<Map<String, Object>> alta(@Valid @RequestBody CineDTO c)
 			throws DomainException, ControllerException, DAOException { // ID,NOMBRE,DESCRIPCION
-
 		Map<String, Object> map = new LinkedHashMap<String, Object>();
 		c.setId_cine(0);
-		c = cDao.insert(c);
-		if (c != null) {
-
-			System.out.println("En alta-" + c.toString());
+		try {
+			Cine cine = cDao.insert(convertToEntity(c));
 			map.put("status", 1);
 			map.put("message", "Registro salvado");
 			return new ResponseEntity<>(map, HttpStatus.OK);
-		} else {
-			throw new ControllerException("Error al hacer la insercion");
+		} catch (Exception ex) {
+			throw new ControllerException("Error al hacer la insercion " + ex.getMessage());
 		}
 	}
 
 	@PutMapping
-	public ResponseEntity<Map<String, Object>> modificacion(@Valid @RequestBody Cine c)
+	public ResponseEntity<Map<String, Object>> modificacion(@Valid @RequestBody CineDTO c)
 			throws ControllerException, DomainException, DAOException {
 		Map<String, Object> map = new LinkedHashMap<String, Object>();
-		if (cDao.update(c)) {
+
+		if (cDao.update(convertToEntity(c))==true) {
 			map.put("status", 1);
 			map.put("message", "Actualizacion correcta");
 			return new ResponseEntity<>(map, HttpStatus.OK);
 		} else {
-			throw new ControllerException("Error al hacer la modificacion");
+			throw new ControllerException("Error al hacer la modificacion " + c.toString() );
 
 		}
 	}
 
 	@DeleteMapping("/{id}")
-	public ResponseEntity<Map<String, Object>> eliminar(@PathVariable("id") String ids) throws ControllerException {
+	public ResponseEntity<Map<String, Object>> eliminar(@CheckCineValidation() @NotNull @PathVariable("id") Long id)
+			throws ControllerException {
 		Map<String, Object> map = new LinkedHashMap<String, Object>();
-		if (ids != null) {
-			try {
-				long id = Long.parseLong(ids);
-				Optional<Cine> cineDB = cDao.leerUno(id);
-				cDao.deleteById(cineDB.get().getId_cine());
-				map.put("status", 1);
-				map.put("message", "Registro borrado");
-				return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
-			} catch (Exception ex) {
-				throw new ControllerException("Error al borrar");
-
-			}
+		try {
+			cDao.deleteById(id);
+			map.put("status", 1);
+			map.put("message", "Registro borrado");
+			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+		} catch (Exception ex) {
+			throw new ControllerException("Error al borrar");
 		}
-		throw new ControllerException("No existe registro al borrar");
 	}
 
+	@RequestMapping("/test")
+	public @ResponseBody String greeting() {
+		return "Hello, World";
+	}
+	
+	private CineDTO convertToDto(Cine cine) {
+		CineDTO cineDTO = mapper.map(cine, CineDTO.class);
+		return cineDTO;
+	}
+	
+	private Cine convertToEntity(CineDTO cineDTO) {
+		Cine cine = mapper.map(cineDTO, Cine.class);
+		return cine;
+	}
 }

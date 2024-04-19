@@ -36,6 +36,7 @@ public class RestResponseEntityExceptionHandler {
 			org.springframework.web.bind.MissingServletRequestParameterException.class,
 			org.springframework.web.method.annotation.MethodArgumentTypeMismatchException.class,
 			java.lang.ArithmeticException.class,
+			org.springframework.web.bind.MethodArgumentNotValidException.class,
 			org.springframework.http.converter.HttpMessageNotReadableException.class })
 	@ResponseBody
 	public ResponseEntity<Map<String, Object>> handleConflict(Exception ex) {
@@ -43,14 +44,6 @@ public class RestResponseEntityExceptionHandler {
 		System.out.println(mensaje);
 		return montaError(ex, mensaje, HttpStatus.BAD_REQUEST);
 	}
-
-//	@ExceptionHandler(ControllerException.class)
-//	public ResponseEntity<Object> procControllerException(final Exception e) {
-//		String mensaje = e.getClass() + "-" + e.getMessage();
-//		System.out.println(mensaje);
-//		return montaError(e, mensaje, HttpStatus.BAD_REQUEST);
-//	}
-
 	private ResponseEntity<Map<String, Object>> montaError(Exception ex, String mensaje, HttpStatus conflict) {
 //*********inicializacion************************************************************
 		Map<String, Object> map = new LinkedHashMap<String, Object>();

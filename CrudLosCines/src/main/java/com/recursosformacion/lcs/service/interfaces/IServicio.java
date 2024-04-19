@@ -17,4 +17,5 @@ public interface  IServicio<T, S> {
 	public boolean deleteById(S s) throws DAOException;
 	public List<T> listAll();
 	public Optional<T>leerUno(S s);
+	public boolean existsById(S s);
 }

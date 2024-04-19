@@ -1,9 +1,9 @@
-package com.recursosformacion.lcs.model;
+package com.recursosformacion.lcs.model.dto;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.recursosformacion.lcs.model.interfaces.Modelo;
+import com.recursosformacion.lcs.persistence.entity.interfaces.Modelo;
 import com.recursosformacion.lcs.util.Rutinas;
 
 import jakarta.persistence.Column;
@@ -17,25 +17,20 @@ import jakarta.validation.constraints.DecimalMax;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Positive;
 
-@Entity
-@Table(name = "Cine")
-public class Cine implements Modelo {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE)
+public class CineDTO implements Modelo {
+
+	
 	private Long id_cine;
 
-	@Column(nullable = false, length = 50)
+	@NotEmpty
 	private String ci_nombre;
 
-	@Column(nullable = true, length = 100)
 	@NotEmpty
 	private String ci_calle;
 
-	@Column(nullable = true, length = 100)
 	private String ci_barrio;
 
-	@Column(nullable = false)
 	@Positive
 	@DecimalMax(value = "1000")
 	private int ci_capacidad;
@@ -46,16 +41,29 @@ public class Cine implements Modelo {
 	
 	
 
-	public Cine() {
+	public CineDTO() {
 		super();
 	}
 
-	public Cine(long id_cine, String ci_nombre, int ci_capacidad, List<Long> ci_lista_entradas) {
+	public CineDTO(long id_cine, String ci_nombre, String ci_calle, int ci_capacidad) {
 		super();
 		this.id_cine = id_cine;
 		this.ci_nombre = ci_nombre;
+		this.ci_calle = ci_calle;
 		this.ci_capacidad = ci_capacidad;
-		setCi_lista_entradas(ci_lista_entradas);
+		
+	}
+
+	public CineDTO(Long id_cine, @NotEmpty String ci_nombre, @NotEmpty String ci_calle, String ci_barrio,
+			@Positive @DecimalMax("1000") int ci_capacidad, List<Long> ci_lista_entradas) {
+		super();
+		this.id_cine = id_cine;
+		this.ci_nombre = ci_nombre;
+		this.ci_calle = ci_calle;
+		this.ci_barrio = ci_barrio;
+		this.ci_capacidad = ci_capacidad;
+		if (ci_lista_entradas!=null)
+			this.ci_lista_entradas = ci_lista_entradas;
 	}
 
 	public long getId_cine() {
@@ -82,11 +90,14 @@ public class Cine implements Modelo {
 		this.ci_capacidad = ci_capacidad;
 	}
 
+	
+	
 	@Override
 	public String toString() {
-		return "Cine [id_cine=" + id_cine + ", ci_nombre=" + ci_nombre + ", ci_capacidad=" + ci_capacidad + "]";
+		return "Cine [id_cine=" + id_cine + ", ci_nombre=" + ci_nombre + ", ci_calle=" + ci_calle + ", ci_barrio="
+				+ ci_barrio + ", ci_capacidad=" + ci_capacidad + "]";
 	}
-	
+
 	public String getCi_calle() {
 		return ci_calle;
 	}

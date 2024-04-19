@@ -1,6 +1,6 @@
-package com.recursosformacion.lcs.model;
+package com.recursosformacion.lcs.persistence.entity;
 
-import com.recursosformacion.lcs.model.interfaces.Modelo;
+import com.recursosformacion.lcs.persistence.entity.interfaces.Modelo;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

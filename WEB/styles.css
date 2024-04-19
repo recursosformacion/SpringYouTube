@@ -1,0 +1,26 @@
+@keyframes mover {
+    0% { top: 0; left: 0; }
+    25% { top: 25%; left: 25%; }
+    50% { top: 50%; left: 50%; }
+    75% { top: 75%; left: 75%; }
+    100% { top: 100; left: 100%; }
+    
+}
+
+body {
+    position: relative;
+    height: 100vh;
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+    background-color: black; /* Agrega esta línea */
+}
+
+.punto-rojo {
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    background-color: red;
+    border-radius: 50%;
+    animation: mover 5s linear infinite;
+}

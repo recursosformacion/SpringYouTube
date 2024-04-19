@@ -21,8 +21,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.recursosformacion.lcs.exception.ControllerException;
 import com.recursosformacion.lcs.exception.DAOException;
 import com.recursosformacion.lcs.exception.DomainException;
-import com.recursosformacion.lcs.model.Entrada;
-import com.recursosformacion.lcs.model_dto.EntradaDTO;
+import com.recursosformacion.lcs.persistence.entity.Entrada;
+import com.recursosformacion.lcs.model.dto.EntradaDTO;
 import com.recursosformacion.lcs.service.CineService;
 import com.recursosformacion.lcs.service.EntradaService;
 
@@ -37,10 +37,13 @@ public class EntradaController {
 	private final EntradaService cDao;
 
 	private final CineService cDaoCine;
+	
+	private Entrada e;
 
 	EntradaController(EntradaService cDao, CineService cDaoCine){
 		this.cDao = cDao;
 		this.cDaoCine = cDaoCine;
+		
 	}
 
 	
@@ -169,14 +172,14 @@ public class EntradaController {
 
 	public Entrada convertirDTO(EntradaDTO d) throws ControllerException {
 
-		Entrada e = new Entrada();
+		this.e = new Entrada();
 		if (Objects.isNull(d.getId_entrada())) {
 			d.setId_entrada(0L);
 		}
 		e.setId_entrada(d.getId_entrada());
 		e.setEnt_fila(d.getEnt_fila());
 		e.setEnt_numero(d.getEnt_numero());
-		e.setEnt_fecha_str(d.getEnt_fecha());
+		e.setEnt_fecha_str(d.getEnt_fecha_str());
 		e.setIdCliente(d.getIdCliente());
 		e.setEntCine(d.getEntCine());
 		

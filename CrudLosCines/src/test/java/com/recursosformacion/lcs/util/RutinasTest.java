@@ -40,7 +40,7 @@ class RutinasTest {
 
 	final LocalDate AHORA = LocalDate.now();
 	final LocalDate MANIANA = LocalDate.now().plusDays(1);;
-	final LocalDate AYER = LocalDate.now().minusDays(2);
+	final LocalDate AYER = LocalDate.now().minusDays(1);
 
 	final String FECHA_OK = "01/07/2022";
 	final String FECHA_OK_1 = "26/12/9999";
@@ -166,22 +166,25 @@ class RutinasTest {
 
 	@Test
 	void testComparaFechas() {
-		assertAll(() -> assertEquals(Rutinas.comparaFechas(AHORA, AHORA),0),
+		assertAll(
+				() -> assertEquals(Rutinas.comparaFechas(AHORA, AHORA),0),
 				() -> assertEquals(Rutinas.comparaFechas(MANIANA, AHORA),1), 
 				() -> assertEquals(Rutinas.comparaFechas(AHORA, AYER),1),
-				() -> assertEquals(Rutinas.comparaFechas(AYER,MANIANA ),-1));
+				() -> assertEquals(Rutinas.comparaFechas(AYER,MANIANA ),-2));
+		
 	}
 
 	@Test
 	void testIsGreater() {
-		assertAll(() -> assertTrue(Rutinas.isGreaterOrEqual(AHORA, AHORA)),
-				() -> assertTrue(Rutinas.isGreater(MANIANA, AHORA)), 
-				() -> assertTrue(Rutinas.isGreater(AHORA, AYER)),
-				() -> assertTrue(Rutinas.isGreater(MANIANA, AYER)),
+		assertAll(
+				() -> assertTrue(Rutinas.isGreaterOrEqual(AHORA, AHORA), "AHORA es mayor o igual a AHORA"),
+				() -> assertTrue(Rutinas.isGreater(MANIANA, AHORA), "MANIANA es mayor a AHORA"), 
+                () -> assertTrue(Rutinas.isGreater(AHORA, AYER), "AHORA es mayor a AYER"),
+                () -> assertTrue(Rutinas.isGreater(MANIANA, AYER), "MANIANA es mayor a AYER"),
 
-				() -> assertFalse(Rutinas.isGreater(AHORA, MANIANA)), 
-				() -> assertFalse(Rutinas.isGreater(AYER, AHORA)),
-				() -> assertFalse(Rutinas.isGreater(AYER, MANIANA)));
+				() -> assertFalse(Rutinas.isGreater(AHORA, MANIANA), "AHORA no es mayor a MANIANA"), 
+				() -> assertFalse(Rutinas.isGreater(AYER, AHORA), "AYER no es mayor a AHORA"),
+				() -> assertFalse(Rutinas.isGreater(AYER, MANIANA), "AYER no es mayor a MANIANA"	));
 	}
 
 	@Test

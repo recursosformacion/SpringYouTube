@@ -1,4 +1,4 @@
-package com.recursosformacion.lcs.model_dto;
+package com.recursosformacion.lcs.model.dto;
 
 
 import org.springframework.stereotype.Component;
@@ -23,7 +23,7 @@ public class EntradaDTO {
 	
 	@NotNull
 	@CheckFechaFuturaValidation
-	private String ent_fecha;
+	private String ent_fecha_str;
 	
 	@NotNull(message = "Es necesario indicar el cine")
 	@CheckCineValidation
@@ -46,19 +46,27 @@ public class EntradaDTO {
 	private String idCliente;
 	
 
+
+	
 	
 	
 	public EntradaDTO() {
 		super();
 	}
 	
-	public EntradaDTO(Long id_entrada, String ent_fecha, Long id_cine, int ent_numero, String idCliente) {
+	public EntradaDTO(long id_entrada, 
+			String ent_fecha_str,  
+			int ent_fila, 
+			int ent_numero, 
+			String idCliente, 
+			Long entCine)  {
 		super();
-		this.id_entrada = id_entrada;
-		this.ent_fecha = ent_fecha;
-		this.entCine = id_cine;
-		this.ent_numero = ent_numero;
-		this.idCliente = idCliente;
+		setId_entrada(id_entrada);
+		setEnt_fecha_str(ent_fecha_str);
+		setEntCine(entCine);
+		setEnt_numero(ent_numero);
+		setEnt_fila(ent_fila);
+		setIdCliente(idCliente);
 	}
 	public Long getId_entrada() {
 		return id_entrada;
@@ -66,11 +74,11 @@ public class EntradaDTO {
 	public void setId_entrada(Long id_entrada) {
 		this.id_entrada = id_entrada;
 	}
-	public String getEnt_fecha() {
-		return ent_fecha;
+	public String getEnt_fecha_str() {
+		return ent_fecha_str;
 	}
-	public void setEnt_fecha(String ent_fecha) {
-		this.ent_fecha = ent_fecha;
+	public void setEnt_fecha_str(String ent_fecha_str) {
+		this.ent_fecha_str = ent_fecha_str;
 	}
 	public Long getId_cine() {
 		return entCine;
@@ -105,7 +113,7 @@ public class EntradaDTO {
 	}
 	@Override
 	public String toString() {
-		return "EntradaDTO [id_entrada=" + id_entrada + ", ent_fecha=" + ent_fecha + ", id_cine=" + entCine
+		return "EntradaDTO [id_entrada=" + id_entrada + ", ent_fecha_str=" + ent_fecha_str + ", id_cine=" + entCine
 				+ ", ent_numero=" + ent_numero + ", idCliente=" + idCliente + "]";
 	}
 	

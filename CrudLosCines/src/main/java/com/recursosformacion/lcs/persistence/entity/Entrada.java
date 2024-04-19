@@ -1,8 +1,8 @@
-package com.recursosformacion.lcs.model;
+package com.recursosformacion.lcs.persistence.entity;
 
 import java.time.LocalDate;
 
-import com.recursosformacion.lcs.model.interfaces.Modelo;
+import com.recursosformacion.lcs.persistence.entity.interfaces.Modelo;
 import com.recursosformacion.lcs.util.Constantes;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.Column;
@@ -32,33 +32,48 @@ public class Entrada implements Modelo {
 	@Column(nullable=false)
 	private int ent_numero;
 	
-	@Column(nullable=false)
+	@Column(name="id_cliente", nullable=false,length=10)
 	private String idCliente;
 	
-	@Column(nullable=false)
+	@Column(name="ent_cine", nullable=false)
 	private Long entCine;
 	
 
 	public Entrada() {
 		super();
 	}
-	public Entrada(long id_entrada, LocalDate ent_fecha, Long entCine, int ent_fila, int ent_numero) {
+	public Entrada(
+			long id_entrada, 
+			LocalDate ent_fecha,  
+			int ent_fila, 
+			int ent_numero, 
+			String idCliente, 
+			Long entCine) {
 		super();
 		setId_entrada(id_entrada);
 		setEnt_fecha(ent_fecha);
 		setEntCine(entCine);
 		setEnt_numero(ent_numero);
 		setEnt_fila(ent_fila);
+		setIdCliente(idCliente);
+		
 	}
 	
 
-	public Entrada(long id_entrada, String ent_fecha_str,  Long entCine, int ent_fila, int ent_numero) {
+	public Entrada(
+			long id_entrada, 
+			String ent_fecha_str,  
+			int ent_fila, 
+			int ent_numero, 
+			String idCliente, 
+			Long entCine) {
 		super();
 		setId_entrada(id_entrada);
 		setEnt_fecha_str(ent_fecha_str);
 		setEntCine(entCine);
 		setEnt_numero(ent_numero);
 		setEnt_fila(ent_fila);
+		setIdCliente(idCliente);
 	}
 	
 	public long getId_entrada() {
@@ -70,8 +85,16 @@ public class Entrada implements Modelo {
 	public LocalDate getEnt_fecha() {
 		return ent_fecha;
 	}
+
+	public String getEnt_fecha_str() {
+		return ent_fecha.format(Constantes.FORMATO_FECHA_EU);
+	}
+	
 	public void setEnt_fecha(LocalDate ent_fecha) {
 		this.ent_fecha = ent_fecha;
+	}
+	public void setEnt_fecha_str(String ent_fecha_str) {		
+		setEnt_fecha(LocalDate.parse(ent_fecha_str,Constantes.FORMATO_FECHA_EU));	
 	}
 	
 	public int getEnt_numero() {
@@ -87,9 +110,7 @@ public class Entrada implements Modelo {
 		this.idCliente = idCliente;
 	}
 
-	public void setEnt_fecha_str(String ent_fecha_str) {		
-		setEnt_fecha(LocalDate.parse(ent_fecha_str,Constantes.FORMATO_FECHA_EU));	
-	}
+	
 	
 
 	public int getEnt_fila() {
