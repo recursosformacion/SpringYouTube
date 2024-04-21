@@ -6,7 +6,6 @@ import java.util.Optional;
 import com.recursosformacion.lcs.exception.DAOException;
 import com.recursosformacion.lcs.exception.DomainException;
 import com.recursosformacion.lcs.persistence.entity.Pelicula;
-import com.recursosformacion.lcs.repository.IEntrada;
 import com.recursosformacion.lcs.repository.IPelicula;
 import com.recursosformacion.lcs.service.interfaces.IServicio;
 

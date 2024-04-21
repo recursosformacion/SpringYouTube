@@ -34,7 +34,7 @@ import java.util.Optional;
 
 
 @ExtendWith(MockitoExtension.class)
-public class EntradaControllerTestJava {
+class EntradaControllerTestJava {
 
     @Mock
     private EntradaService cDao;

@@ -8,43 +8,49 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.io.UnsupportedEncodingException;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.type.CollectionType;
 import com.recursosformacion.lcs.exception.DAOException;
 import com.recursosformacion.lcs.exception.DomainException;
 import com.recursosformacion.lcs.model.dto.CineProjectionNombre;
+import com.recursosformacion.lcs.persistence.entity.Cine;
 import com.recursosformacion.lcs.persistence.entity.CineTest;
 import com.recursosformacion.lcs.service.CineService;
 
 import jakarta.validation.ConstraintViolationException;
 
-
-@WebMvcTest(controllers = EntradaController.class)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@AutoConfigureMockMvc
 class CineControllerTestIntegracion {
 
 	@Autowired
 	private MockMvc mvc;
 
 	@Autowired
-	ObjectMapper objectMapper;
+	private CineService cDao;
 
-	@MockBean
-    private CineService cDao;
-	
+	ObjectMapper objectMapper = new ObjectMapper();
+	private static final Logger LOGGER = LogManager.getLogger(CineControllerTestIntegracion.class);
+
 	CineTest cine;
 	CineTest cine2;
 	CineTest cine3;
@@ -94,85 +100,90 @@ class CineControllerTestIntegracion {
 
 	@Test
 	void getAllCineTestAPI() throws Exception {
-		MvcResult result  = mvc.perform(get("/api/cine"))
-				.andReturn();
-		System.out.println(result.getResponse().getContentAsString());
-		System.out.println("****************************************************************");
-		
-		mvc.perform(get("/api/cine")
-				.accept(MediaType.APPLICATION_JSON))
-				.andExpect(status().isOk())
-				.andExpect(jsonPath("$.data").exists())
-				.andExpect(jsonPath("$.status",is(1)))
-				.andExpect(jsonPath("$.data[*].id_cine").isNotEmpty());		
+		MvcResult result = mvc.perform(get("/api/cine")).andReturn();
+
+		LOGGER.info("****************************************************************");
+		convertirAStream(result).forEach(cine -> {
+			LOGGER.info(cine);
+		});
+		LOGGER.info("****************************************************************");
+
+		mvc.perform(get("/api/cine").accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
+				.andExpect(jsonPath("$.data").exists()).andExpect(jsonPath("$.status", is(1)))
+				.andExpect(jsonPath("$.data[*].id_cine").isNotEmpty());
 	}
+
+	@Test
+	void testLeerDirecciones() throws Exception {
+		mvc.perform(get("/api/cine/direccion")
+			.contentType(MediaType.APPLICATION_JSON))
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("$.data")
+			.exists())
+			.andExpect(jsonPath("$.data[*].id_cine")
+			.isNotEmpty());
+	}
+
 //	
-//	@Test
-//    public void testLeerDirecciones() throws Exception {
-//        mvc.perform(get("/api/cine/direccion")
-//                .contentType(MediaType.APPLICATION_JSON))
-//                .andExpect(status().isOk())
-//                .andExpect(jsonPath("$.data").exists())
-//				.andExpect(jsonPath("$.data[*].id_cine").isNotEmpty());	
-//    }
-//	
-//	 @Test
-//	 void testLeerUno() throws Exception {
-//	    String id = "16";
-//
-//	    mvc.perform(get("/api/cine/" + id)
-//	           .contentType(MediaType.APPLICATION_JSON))
-//	           .andExpect(status().isOk())
-//	           .andExpect(jsonPath("$.status", is(1)))
-//	           .andExpect(jsonPath("$.data.id_cine", is(16)));
-//	}
+	@Test
+	void testLeerUno() throws Exception {
+		String id = "16";
+
+		mvc.perform(get("/api/cine/" + id).contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
+				.andExpect(jsonPath("$.status", is(1))).andExpect(jsonPath("$.data.id_cine", is(16)));
+	}
+
 //	 
-//	 @Test
-//	 void testLeerUno_fallando() throws Exception {
-//	    String id = "9999";
-//
-//	    mvc.perform(get("/api/cine/" + id)
-//	           .contentType(MediaType.APPLICATION_JSON))
-//	           .andExpect(status().is4xxClientError())
-//	           .andExpect(jsonPath("$.status", is(900)));
-//	}
-//
-//	 @Test
-//	     void testAlta() throws Exception {
-//
-//	        mvc.perform(post("/api/cine")
-//	                .contentType(MediaType.APPLICATION_JSON)
-//	                .content(cine2Json))
-//	                .andExpect(status().isOk())
-//	                .andExpect(jsonPath("$.status", is(1)))
-//	                .andExpect(jsonPath("$.message", is("Registro salvado")));
-//	    }
-//
-//	    @Test
-//	     void testModificacion() throws Exception {
-//	    	
-//	        mvc.perform(put("/api/cine")
-//	                .contentType(MediaType.APPLICATION_JSON)
-//	                .content(cineExistenteJson))
-//	                .andExpect(status().isOk())
-//	                .andExpect(jsonPath("$.status", is(1)))
-//	                .andExpect(jsonPath("$.message", is("Actualizacion correcta")));
-//	    }
-//
-//	    @Test
-//	    public void testEliminar() throws Exception {
-//
-//	    	String id = "10";
-//	        mvc.perform(delete("/api/cine/" + id)
-//	                .contentType(MediaType.APPLICATION_JSON))
-//	                .andExpect(status().isOk())
-//	                .andExpect(jsonPath("$.status", is(1)))
-//	                .andExpect(jsonPath("$.message", is("Registro borrado")));
-//	        
-//	        id = "10";
-//		    mvc.perform(get("/api/cine/" + id)
-//		           .contentType(MediaType.APPLICATION_JSON))
-//		           .andExpect(status().is4xxClientError())
-//		           .andExpect(jsonPath("$.status", is(900)));
-//	    }
+	@Test
+	void testLeerUno_fallando() throws Exception {
+		String id = "9999";
+
+		mvc.perform(get("/api/cine/" + id).contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().is4xxClientError()).andExpect(jsonPath("$.status", is(900)));
+	}
+
+	@Test
+	void testAlta() throws Exception {
+
+		mvc.perform(post("/api/cine").contentType(MediaType.APPLICATION_JSON).content(cine2Json))
+				.andExpect(status().isOk()).andExpect(jsonPath("$.status", is(1)))
+				.andExpect(jsonPath("$.message", is("Registro salvado")));
+	}
+
+	@Test
+	void testModificacion() throws Exception {
+
+		mvc.perform(put("/api/cine").contentType(MediaType.APPLICATION_JSON).content(cineExistenteJson))
+				.andExpect(status().isOk()).andExpect(jsonPath("$.status", is(1)))
+				.andExpect(jsonPath("$.message", is("Actualizacion correcta")));
+	}
+
+	@Test
+	public void testEliminar() throws Exception {
+
+		String id = "10";
+		mvc.perform(delete("/api/cine/" + id).contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
+				.andExpect(jsonPath("$.status", is(1))).andExpect(jsonPath("$.message", is("Registro borrado")));
+
+		id = "10";
+		mvc.perform(get("/api/cine/" + id).contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().is4xxClientError()).andExpect(jsonPath("$.status", is(900)));
+	}
+
+	Stream<Cine> convertirAStream(MvcResult mvcResult)
+			throws JsonMappingException, JsonProcessingException, UnsupportedEncodingException {
+		String contentAsString = mvcResult.getResponse().getContentAsString();
+
+		// Lee el valor del campo 'data' en el JSON y conviértelo a una lista de Cine
+		JsonNode root = objectMapper.readTree(contentAsString);
+
+		ObjectMapper objectMapper = new ObjectMapper();
+
+		// Configura ObjectMapper para convertir automáticamente los objetos JSON en
+		// objetos Cine
+		CollectionType type = objectMapper.getTypeFactory().constructCollectionType(List.class, Cine.class);
+		List<Cine> list = objectMapper.readValue(root.get("data").toString(), type);
+
+		return list.stream();
+	}
 }

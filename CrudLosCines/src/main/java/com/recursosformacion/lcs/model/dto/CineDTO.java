@@ -3,16 +3,11 @@ package com.recursosformacion.lcs.model.dto;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.recursosformacion.lcs.persistence.entity.interfaces.Modelo;
 import com.recursosformacion.lcs.util.Rutinas;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
 import jakarta.validation.constraints.DecimalMax;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Positive;
@@ -35,6 +30,7 @@ public class CineDTO implements Modelo {
 	@DecimalMax(value = "1000")
 	private int ci_capacidad;
 	
+	@JsonIgnore
 	@ElementCollection
 	private List<Long> ci_lista_entradas;
 

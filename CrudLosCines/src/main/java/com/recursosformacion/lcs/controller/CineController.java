@@ -43,8 +43,8 @@ public class CineController {
 
 	private final CineService cDao;
 	
-	@Autowired
-	private ModelMapper mapper;
+	
+	private ModelMapper mapper = new ModelMapper();
 
 	CineController(CineService cDao) {
 		this.cDao = cDao;
