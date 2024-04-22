@@ -9,7 +9,6 @@ import java.util.stream.Collectors;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -89,7 +88,9 @@ public class CineController {
 		Map<String, Object> map = new LinkedHashMap<String, Object>();
 		List<Cine> cat = cDao.listAll();
 		if (!cat.isEmpty()) {
-			List<CineDTO> cDTO = cat.stream().map(cine -> convertToDto(cine)).collect(Collectors.toList());		
+			List<CineDTO> cDTO = cat.stream()
+					.map(cine -> convertToDto(cine))
+					.collect(Collectors.toList());		
 			map.put("status", 1);
 			map.put("data", cDTO);
 			return new ResponseEntity<>(map, HttpStatus.OK);
@@ -147,12 +148,12 @@ public class CineController {
 		return "Hello, World";
 	}
 	
-	private CineDTO convertToDto(Cine cine) {
+	public CineDTO convertToDto(Cine cine) {
 		CineDTO cineDTO = mapper.map(cine, CineDTO.class);
 		return cineDTO;
 	}
 	
-	private Cine convertToEntity(CineDTO cineDTO) {
+	public Cine convertToEntity(CineDTO cineDTO) {
 		Cine cine = mapper.map(cineDTO, Cine.class);
 		return cine;
 	}

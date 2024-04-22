@@ -30,7 +30,7 @@ import com.recursosformacion.lcs.service.CineService;
 
 
 @ExtendWith(MockitoExtension.class)
-class CineControllerTest {
+class CineControllerTestSpring {
 	@Autowired
     private MockMvc mvc;
 	

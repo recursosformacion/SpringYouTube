@@ -2,6 +2,7 @@ package com.recursosformacion.lcs.model.dto;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.recursosformacion.lcs.persistence.entity.interfaces.Modelo;
@@ -130,4 +131,7 @@ public class CineDTO implements Modelo {
 	public boolean isValidUpdate() {
 		return true;
 	}
+
+
+	
 }
