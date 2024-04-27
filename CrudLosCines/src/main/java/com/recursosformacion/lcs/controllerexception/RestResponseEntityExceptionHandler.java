@@ -1,4 +1,4 @@
-package com.recursosformacion.lcs.exception;
+package com.recursosformacion.lcs.controllerexception;
 
 import java.util.Arrays;
 
@@ -12,6 +12,11 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.recursosformacion.lcs.exception.ControllerException;
+import com.recursosformacion.lcs.exception.DAOException;
+import com.recursosformacion.lcs.exception.DomainException;
+import com.recursosformacion.lcs.util.Constantes;
 
 
 @CrossOrigin
@@ -52,8 +57,8 @@ public class RestResponseEntityExceptionHandler {
 //********* Estableciendo el status de salida y el mensaje de error
 		
 		map.clear();
-		map.put("status", 0);
-		map.put("message", mensaje);
+		map.put(Constantes.STATUS, 0);
+		map.put(Constantes.MENSAJE, mensaje);
 		
 		/* *************************************************************************	
 		// getStackTrace se deberia filtrar por "className": "es.rf.tienda.*/

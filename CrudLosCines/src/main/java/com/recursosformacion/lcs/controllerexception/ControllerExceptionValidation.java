@@ -1,4 +1,4 @@
-package com.recursosformacion.lcs.exception;
+package com.recursosformacion.lcs.controllerexception;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -9,6 +9,8 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import com.recursosformacion.lcs.util.Constantes;
 
 import jakarta.validation.ConstraintViolationException;
 
@@ -22,14 +24,14 @@ public class ControllerExceptionValidation /*extends ResponseEntityExceptionHand
 	@ExceptionHandler(value = { MethodArgumentNotValidException.class })
 	public Map<String, Object> gestionValidaciones(MethodArgumentNotValidException ex) {
 		Map<String, Object> errores = new HashMap<String, Object>();
-		errores.put("status", 900);
+		errores.put(Constantes.STATUS, 900);
 		Map<String, String> listaErrores = new HashMap<String, String>();
 		ex.getBindingResult().getAllErrors().forEach(error -> {
 			String nombreCampo = ((FieldError) error).getField();
 			String mensaje = error.getDefaultMessage();
 			listaErrores.put(nombreCampo, mensaje);
 		});
-		errores.put("lista", listaErrores);
+		errores.put(Constantes.MENSAJE, listaErrores);
 		return errores;
 	}
 
@@ -38,7 +40,7 @@ public class ControllerExceptionValidation /*extends ResponseEntityExceptionHand
 			org.hibernate.exception.ConstraintViolationException.class })
 	public Map<String, Object> gestionConstraint(ConstraintViolationException ex) {
 		Map<String, Object> errores = new HashMap<String, Object>();
-		errores.put("status", 900);
+		errores.put(Constantes.STATUS, 900);
 
 		Map<String, String> listaErrores = new HashMap<String, String>();
 		ex.getConstraintViolations().forEach(error -> {
@@ -46,7 +48,7 @@ public class ControllerExceptionValidation /*extends ResponseEntityExceptionHand
 			String mensaje = error.getMessage();
 			listaErrores.put(nombreCampo, mensaje);
 		});
-		errores.put("lista", listaErrores);
+		errores.put(Constantes.MENSAJE, listaErrores);
 		return errores;
 	}
 

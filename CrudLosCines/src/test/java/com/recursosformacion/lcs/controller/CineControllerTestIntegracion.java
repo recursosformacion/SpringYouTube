@@ -35,6 +35,7 @@ import com.recursosformacion.lcs.model.dto.CineProjectionNombre;
 import com.recursosformacion.lcs.persistence.entity.Cine;
 import com.recursosformacion.lcs.persistence.entity.CineTest;
 import com.recursosformacion.lcs.service.CineService;
+import com.recursosformacion.lcs.util.Constantes;
 
 import jakarta.validation.ConstraintViolationException;
 
@@ -182,7 +183,7 @@ class CineControllerTestIntegracion {
 		// Configura ObjectMapper para convertir automáticamente los objetos JSON en
 		// objetos Cine
 		CollectionType type = objectMapper.getTypeFactory().constructCollectionType(List.class, Cine.class);
-		List<Cine> list = objectMapper.readValue(root.get("data").toString(), type);
+		List<Cine> list = objectMapper.readValue(root.get(Constantes.DATOS).toString(), type);
 
 		return list.stream();
 	}

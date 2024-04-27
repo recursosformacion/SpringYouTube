@@ -66,8 +66,8 @@ class EntradaControllerTestJava {
 
         // Verificar
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(1, response.getBody().get("status"));
-        assertEquals(entrada, response.getBody().get("data"));
+        assertEquals(1, response.getBody().get(Constantes.STATUS));
+        assertEquals(entrada, response.getBody().get(Constantes.DATOS));
     }
 
     @Test
@@ -85,8 +85,8 @@ class EntradaControllerTestJava {
 
         // Verificar
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(1, response.getBody().get("status"));
-        assertEquals(entradas, response.getBody().get("data"));
+        assertEquals(1, response.getBody().get(Constantes.STATUS));
+        assertEquals(entradas, response.getBody().get(Constantes.DATOS));
     }
 
     @Test
@@ -105,8 +105,8 @@ class EntradaControllerTestJava {
 
         // Verificar
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(1, response.getBody().get("status"));
-        assertEquals(entradas, response.getBody().get("data"));
+        assertEquals(1, response.getBody().get(Constantes.STATUS));
+        assertEquals(entradas, response.getBody().get(Constantes.DATOS));
     }
 
     @Test
@@ -125,8 +125,8 @@ class EntradaControllerTestJava {
 
         // Verificar
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(1, response.getBody().get("status"));
-        assertEquals(entradas, response.getBody().get("data"));
+        assertEquals(1, response.getBody().get(Constantes.STATUS));
+        assertEquals(entradas, response.getBody().get(Constantes.DATOS));
     }
     
     @Test
@@ -141,8 +141,8 @@ class EntradaControllerTestJava {
 
         // Verificar
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(1, response.getBody().get("status"));
-        assertEquals(entrada, response.getBody().get("data"));
+        assertEquals(1, response.getBody().get(Constantes.STATUS));
+        assertEquals(entrada, response.getBody().get(Constantes.DATOS));
     }
 
     @Test
@@ -156,8 +156,8 @@ class EntradaControllerTestJava {
 
         // Verificar
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(1, response.getBody().get("status"));
-        assertEquals("Actualizacion realizada", response.getBody().get("message"));
+        assertEquals(1, response.getBody().get(Constantes.STATUS));
+        assertEquals("Actualizacion realizada", response.getBody().get(Constantes.MENSAJE));
     }
 
     // chat copilot
@@ -177,8 +177,8 @@ class EntradaControllerTestJava {
 
         // Verificar
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(1, response.getBody().get("status"));
-        assertEquals("Registro borrado", response.getBody().get("message"));
+        assertEquals(1, response.getBody().get(Constantes.STATUS));
+        assertEquals("Registro borrado", response.getBody().get(Constantes.MENSAJE));
     }
 
     @Test

@@ -20,7 +20,7 @@ public class UserController {
 //        if (result.hasErrors()) {
 //            return "userHome";
 //        }
-//        model.addAttribute("message", "Valid form");
+//        model.addAttribute(Constantes.MENSAJE, "Valid form");
 //        return "userHome";
 //    }
     

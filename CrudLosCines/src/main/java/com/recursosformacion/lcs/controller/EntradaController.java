@@ -25,6 +25,7 @@ import com.recursosformacion.lcs.persistence.entity.Entrada;
 import com.recursosformacion.lcs.model.dto.EntradaDTO;
 import com.recursosformacion.lcs.service.CineService;
 import com.recursosformacion.lcs.service.EntradaService;
+import com.recursosformacion.lcs.util.Constantes;
 
 import jakarta.validation.Valid;
 
@@ -57,8 +58,8 @@ public class EntradaController {
 				Optional<Entrada> entradaDB = (Optional<Entrada>) cDao.leerUno(id);
 
 				if (entradaDB.isPresent()) {
-					map.put("status", 1);
-					map.put("data", entradaDB.get());
+					map.put(Constantes.STATUS, 1);
+					map.put(Constantes.DATOS, entradaDB.get());
 					return new ResponseEntity<>(map, HttpStatus.OK);
 				} else {
 					mensaje = "No existen datos";
@@ -80,8 +81,8 @@ public class EntradaController {
 		List<Entrada> cat = cDao.listAll();
 
 		if (!cat.isEmpty()) {
-			map.put("status", 1);
-			map.put("data", cat);
+			map.put(Constantes.STATUS, 1);
+			map.put(Constantes.DATOS, cat);
 			return new ResponseEntity<>(map, HttpStatus.OK);
 		} else {
 			throw new ControllerException("No existen datos");
@@ -94,8 +95,8 @@ public class EntradaController {
 		Map<String, Object> map = new LinkedHashMap<String, Object>();
 		List<Entrada> entradas = cDao.findByIdCliente(id);
 		if (!entradas.isEmpty()) {
-			map.put("status", 1);
-			map.put("data", entradas);
+			map.put(Constantes.STATUS, 1);
+			map.put(Constantes.DATOS, entradas);
 			return new ResponseEntity<>(map, HttpStatus.OK);
 			
 		} else {
@@ -108,8 +109,8 @@ public class EntradaController {
 		Map<String, Object> map = new LinkedHashMap<String, Object>();
 		List<Entrada> entradas = cDao.findByEntCine(id);
 		if (!entradas.isEmpty()) {
-			map.put("status", 1);
-			map.put("data", entradas);
+			map.put(Constantes.STATUS, 1);
+			map.put(Constantes.DATOS, entradas);
 			return new ResponseEntity<>(map, HttpStatus.OK);
 			
 		} else {
@@ -128,8 +129,8 @@ public class EntradaController {
 		e = cDao.insert(e);
 		if (e != null) {
 			cDaoCine.addEntrada(e);
-			map.put("status", 1);
-			map.put("data", e);
+			map.put(Constantes.STATUS, 1);
+			map.put(Constantes.DATOS, e);
 			return new ResponseEntity<>(map, HttpStatus.OK);
 		} else {
 			throw new ControllerException("Error al hacer la insercion");
@@ -142,8 +143,8 @@ public class EntradaController {
 		Map<String, Object> map = new LinkedHashMap<String, Object>();
 		Entrada e = convertirDTO(c);
 		if (cDao.update(e)) {
-			map.put("status", 1);
-			map.put("message", "Actualizacion realizada");
+			map.put(Constantes.STATUS, 1);
+			map.put(Constantes.MENSAJE, "Actualizacion realizada");
 			return new ResponseEntity<>(map, HttpStatus.OK);
 		} else {
 			throw new ControllerException("Error al hacer la modificacion");
@@ -159,8 +160,8 @@ public class EntradaController {
 				long id = Long.parseLong(ids);
 				Optional<Entrada> entradaDB = cDao.leerUno(id);
 				cDao.deleteById(entradaDB.get().getId_entrada());
-				map.put("status", 1);
-				map.put("message", "Registro borrado");
+				map.put(Constantes.STATUS, 1);
+				map.put(Constantes.MENSAJE, "Registro borrado");
 				return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 			} catch (Exception ex) {
 				throw new ControllerException("Error al borrar");
