@@ -1,4 +1,4 @@
-package com.recursosformacion.lcs.controllerexception;
+package com.recursosformacion.lcs.controller.exception;
 
 import java.util.HashMap;
 import java.util.Map;

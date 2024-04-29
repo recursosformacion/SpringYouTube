@@ -3,56 +3,31 @@ package com.recursosformacion.lcs.controller;
 import static org.mockito.Mockito.when;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.any;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.content;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.mock.web.MockHttpServletResponse;
-import org.springframework.test.web.client.match.ContentRequestMatchers;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.ResultMatcher;
-import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
-import org.springframework.test.web.servlet.result.JsonPathResultMatchers;
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
-import org.springframework.util.MimeTypeUtils;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.jayway.jsonpath.JsonPath;
-import com.recursosformacion.lcs.exception.ControllerException;
 import com.recursosformacion.lcs.model.dto.CineDTO;
 import com.recursosformacion.lcs.model.dto.CineProjectionNombre;
 import com.recursosformacion.lcs.persistence.entity.Cine;
 import com.recursosformacion.lcs.service.CineService;
 import com.recursosformacion.lcs.util.Constantes;
-
-import jakarta.validation.ConstraintViolationException;
 
 
 
@@ -112,7 +87,7 @@ class CineControllerTestSpring {
 ////	
 	@Test
 	void leoNoExistente_devuelveError() throws Exception {
-		when(cDao.leerUno(1L)).thenReturn(Optional.empty());
+		when(cDao.existsById(1L)).thenReturn(false);
 		mvc.perform(get("/api/cine/1"))
 				.andExpect(status().is4xxClientError())
                 .andExpect(jsonPath("$."+Constantes.STATUS, is(900)))
@@ -145,6 +120,30 @@ class CineControllerTestSpring {
 				.andReturn()
 			      ;
 //				System.out.println(result.getResponse().getContentAsString());
+	}
+	
+	@Test
+	void leeCineProyection_devuelve200() throws Exception {
+		List<CineProjectionNombre> lcine = Arrays.asList(this.cineProjectionNombre);
+		when(cDao.getAllCineProjectionNombre()).thenReturn(lcine);
+
+		mvc.perform(get("/api/cine/direccion"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$."+Constantes.STATUS, is(1)))
+                .andExpect(jsonPath("$."+Constantes.DATOS+"[0].ci_nombre", is(cine.getCi_nombre())))
+                .andExpect(jsonPath("$."+Constantes.DATOS+"[0].ci_barrio", is(cine.getCi_barrio())))
+        ;
+	}
+	
+	@Test
+	void leeCineProyectionError() throws Exception {
+		List<CineProjectionNombre> lista = new ArrayList<CineProjectionNombre>();
+		when(cDao.getAllCineProjectionNombre()).thenReturn(lista);
+		mvc.perform(get("/api/cine"))
+			      .andExpect(status().is4xxClientError())
+			      .andExpect(jsonPath("$."+Constantes.STATUS, is(0)))
+			      .andExpect(jsonPath("$."+Constantes.MENSAJE, containsString("No existen datos")))
+			      ;
 	}
 	
 	@Test
@@ -203,7 +202,7 @@ class CineControllerTestSpring {
         .andExpect(jsonPath("$."+Constantes.STATUS, is(1)))
         .andExpect(jsonPath("$."+Constantes.MENSAJE, containsString("Actualizacion correcta")));
 	}
-	
+
 	@Test
 	void hace_PutError_devuelveControllerException() throws Exception {
 		when(cDao.update(any(Cine.class))).thenReturn(false);
@@ -227,7 +226,7 @@ class CineControllerTestSpring {
 	
 	@Test
 	void hace_DeleteError_devuelveControllerException() throws Exception {
-		when(cDao.deleteById(1L)).thenThrow(ConstraintViolationException.class);
+		when(cDao.existsById(1L)).thenReturn(false);
 		mvc.perform(get("/api/cine/1"))
 		.andExpect(status().is4xxClientError())
         .andExpect(jsonPath("$."+Constantes.STATUS, is(900)))

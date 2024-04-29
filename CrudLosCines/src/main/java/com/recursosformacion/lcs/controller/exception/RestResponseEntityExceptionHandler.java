@@ -1,4 +1,4 @@
-package com.recursosformacion.lcs.controllerexception;
+package com.recursosformacion.lcs.controller.exception;
 
 import java.util.Arrays;
 

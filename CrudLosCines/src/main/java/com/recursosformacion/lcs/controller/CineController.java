@@ -45,7 +45,7 @@ public class CineController {
 	
 	
 	private ModelMapper mapper = new ModelMapper();
-
+ 
 	CineController(CineService cDao) {
 		this.cDao = cDao;
 	}
