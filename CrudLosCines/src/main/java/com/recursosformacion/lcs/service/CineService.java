@@ -126,5 +126,9 @@ public class CineService implements IServicio<Cine, Long> {
 	public boolean existsById(Long s) {
 		return cineRepository.existsById(s);
 	}
+	
+	public Optional<Cine> findById(Long id) {
+		return cineRepository.findById(id);
+	}
 
 }

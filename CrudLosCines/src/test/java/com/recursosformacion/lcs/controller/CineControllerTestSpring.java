@@ -43,10 +43,10 @@ class CineControllerTestSpring {
 	
 	CineDTO cineDTO;
 	Cine cine;
-	Cine cineExistente;
-	Cine cineErrorNombre;
-	Cine cineErrorCalle;
-	Cine cineErrorCapacidad;
+	CineDTO cineExistente;
+	CineDTO cineErrorNombre;
+	CineDTO cineErrorCalle;
+	CineDTO cineErrorCapacidad;
 	
 	String cineJson;
 	
@@ -56,10 +56,10 @@ class CineControllerTestSpring {
 	@BeforeEach
 	void setup() throws JsonProcessingException {
 		this.cine = new Cine(1L, "Cine1", "Calle 1","Barrio 1", 300,null);
-		this.cineExistente = new Cine(10L, "Cine10", "Calle 10","Barrio 10", 500,null);
-		this.cineErrorNombre = new Cine(1L, "", "Calle 1","Barrio 1", 300, null);	
-		this.cineErrorCalle = new Cine(1L, "Cine1", "","Barrio 1", 300, null);
-		this.cineErrorCapacidad = new Cine(1L, "Cine1", "Calle 1","Barrio 1", 0, null);
+		this.cineExistente = new CineDTO(10L, "Cine10", "Calle 10","Barrio 10", 500,null);
+		this.cineErrorNombre = new CineDTO(1L, "", "Calle 1","Barrio 1", 300, null);	
+		this.cineErrorCalle = new CineDTO(1L, "Cine1", "","Barrio 1", 300, null);
+		this.cineErrorCapacidad = new CineDTO(1L, "Cine1", "Calle 1","Barrio 1", 0, null);
 		this.cineDTO = new CineDTO(1L, "Cine1", "Calle 1","Barrio 1", 300,null);
 		this.cineOptional = Optional.of(cine);
 		this.cineProjectionNombre = new CineProjectionNombre(1L, "Cine1", "Barrio 1");
@@ -204,7 +204,8 @@ class CineControllerTestSpring {
 	}
 
 	@Test
-	void hace_PutError_devuelveControllerException() throws Exception {
+	void hace_PutError_devuelveErrorAlModificar() throws Exception {
+		when(cDao.findById(any(Long.class))).thenReturn(cineOptional);
 		when(cDao.update(any(Cine.class))).thenReturn(false);
 		mvc.perform(put("/api/cine")
 				.contentType(MediaType.APPLICATION_JSON)
@@ -213,7 +214,19 @@ class CineControllerTestSpring {
         .andExpect(jsonPath("$."+Constantes.STATUS, is(0)))
         .andExpect(jsonPath("$."+Constantes.MENSAJE, containsString("Error al hacer la modificacion")));
 	}
-	
+
+	@Test
+	void hace_PutError_devuelveErrorNoExiste() throws Exception {
+		when(cDao.findById(any(Long.class))).thenReturn(null);
+		when(cDao.update(any(Cine.class))).thenReturn(false);
+		mvc.perform(put("/api/cine")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(cineDTO)))
+        .andExpect(status().is4xxClientError())
+        .andExpect(jsonPath("$."+Constantes.STATUS, is(0)))
+        .andExpect(jsonPath("$."+Constantes.MENSAJE, containsString("Error al hacer la modificacion")));
+	}
+
 	@Test
 	void hace_DeleteOk_devuelve200() throws Exception {
 		when(cDao.existsById(1L)).thenReturn(true);

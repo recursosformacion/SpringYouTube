@@ -8,10 +8,10 @@ import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.recursosformacion.lcs.exception.ControllerException;
 import com.recursosformacion.lcs.exception.DAOException;
@@ -20,7 +20,7 @@ import com.recursosformacion.lcs.util.Constantes;
 
 
 @CrossOrigin
-@ControllerAdvice
+@RestControllerAdvice
 public class RestResponseEntityExceptionHandler {
 
 	String MI_RUTA = "com.recursosformacion.lcs";
