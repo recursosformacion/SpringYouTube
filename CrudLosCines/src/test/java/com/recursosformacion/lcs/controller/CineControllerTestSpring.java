@@ -21,6 +21,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.recursosformacion.lcs.model.dto.CineDTO;
@@ -205,7 +207,6 @@ class CineControllerTestSpring {
 
 	@Test
 	void hace_PutError_devuelveErrorAlModificar() throws Exception {
-		when(cDao.findById(any(Long.class))).thenReturn(cineOptional);
 		when(cDao.update(any(Cine.class))).thenReturn(false);
 		mvc.perform(put("/api/cine")
 				.contentType(MediaType.APPLICATION_JSON)
@@ -217,11 +218,12 @@ class CineControllerTestSpring {
 
 	@Test
 	void hace_PutError_devuelveErrorNoExiste() throws Exception {
-		when(cDao.findById(any(Long.class))).thenReturn(null);
-		when(cDao.update(any(Cine.class))).thenReturn(false);
+		when(cDao.findById(any(Long.class))).thenReturn(Optional.empty());
+//		when(cDao.update(any(Cine.class))).thenReturn(false);
 		mvc.perform(put("/api/cine")
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(cineDTO)))
+		.andDo(MockMvcResultHandlers.print())
         .andExpect(status().is4xxClientError())
         .andExpect(jsonPath("$."+Constantes.STATUS, is(0)))
         .andExpect(jsonPath("$."+Constantes.MENSAJE, containsString("Error al hacer la modificacion")));

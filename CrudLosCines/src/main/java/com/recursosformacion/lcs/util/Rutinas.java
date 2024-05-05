@@ -80,7 +80,7 @@ public class Rutinas {
 	}
 
 	static public int nuevoSiNoVacio(int valorActual, int valorNuevo) {
-		if (Objects.nonNull(valorNuevo)) {
+		if (valorNuevo>0) {
 			return valorNuevo;
 		} else {
 			return valorActual;
@@ -96,7 +96,7 @@ public class Rutinas {
 	}
 
 	static public Long nuevoSiNoVacio(long valorActual, long valorNuevo) {
-		if (Objects.nonNull(valorNuevo)) {
+		if (valorNuevo>0) {
 			return valorNuevo;
 		} else {
 			return valorActual;

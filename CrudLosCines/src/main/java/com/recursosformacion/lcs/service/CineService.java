@@ -63,7 +63,8 @@ public class CineService implements IServicio<Cine, Long> {
 	@Override
 	public boolean update(Cine cine) throws DomainException, DAOException {
 
-		Optional<Cine> cineDBO = cineRepository.findById(cine.getId_cine());
+		Optional<Cine> cineDBO = findById(cine.getId_cine());
+		System.out.println("cineDBO: " + cineDBO);
 		if (cineDBO.isEmpty()) {
 			throw new DAOException("El registro ya no existe");
 		}
@@ -97,7 +98,7 @@ public class CineService implements IServicio<Cine, Long> {
 
 	@Override
 	public Optional<Cine> leerUno(Long id) {
-		return cineRepository.findById(id);
+		return findById(id);
 
 	}
 	
