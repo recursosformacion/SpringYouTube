@@ -99,22 +99,6 @@ class CineControllerTestIntegracion {
 		this.cineOptional = Optional.of(cine17);
 
 	}
-
-
-
-	@Test
-	@Order(10)
-	void testLeerDirecciones() throws Exception {
-		mvc.perform(get("/api/cine/direccion")
-			.contentType(MediaType.APPLICATION_JSON))
-			.andExpect(status().isOk())
-			.andExpect(jsonPath(DATOS).exists())
-			.andExpect(jsonPath(DATOS+".size()",is(NUMERO_REGISTROS)))
-			.andExpect(jsonPath(DATOS+"[*].id_cine").isNotEmpty())
-			.andExpect(jsonPath(DATOS+"[*].ci_nombre").isNotEmpty())
-			;
-	}
-
 //	
 	@Test
 	@Order(20)
@@ -165,8 +149,6 @@ class CineControllerTestIntegracion {
 			;
 	}
 	
-
-
 	@Test
 	@Order(11)
 	void leeCineProyection_devuelve200() throws Exception {
@@ -178,15 +160,6 @@ class CineControllerTestIntegracion {
                 .andExpect(jsonPath(DATOS+"[*].ci_barrio").isNotEmpty())
         ;
 	}
-
-//	@Test
-//	void leeCineProyectionError() throws Exception {
-//		mvc.perform(get("/api/cine"))
-//			      .andExpect(status().is4xxClientError())
-//			      .andExpect(jsonPath("$."+Constantes.STATUS, is(0)))
-//			      .andExpect(jsonPath("$."+Constantes.MENSAJE, containsString("No existen datos")))
-//			      ;
-//	}
 	
 	@Test
 	@Order(22)
@@ -311,7 +284,7 @@ class CineControllerTestIntegracion {
 	}
 	
 	@Test
-	@Order(999)
+	@Order(900)
 	void comprueba_error_lista_vacia() throws Exception {
 		listaTabla("comprueba_error_lista_vacia");
 		for (long i = 11; i <= 16; i++) {
@@ -327,8 +300,17 @@ class CineControllerTestIntegracion {
 	      .andExpect(jsonPath("$."+Constantes.MENSAJE, containsString("No existen datos")))
 		.andReturn()
 	      ;
-	
 		
+	}
+	
+	@Test
+	@Order(910)
+	void leeCineProyectionError() throws Exception {
+		mvc.perform(get("/api/cine/direccion"))
+			      .andExpect(status().is4xxClientError())
+			      .andExpect(jsonPath("$."+Constantes.STATUS, is(0)))
+			      .andExpect(jsonPath("$."+Constantes.MENSAJE, containsString("No existen datos")))
+			      ;
 	}
 	
 	Stream<Cine> convertirAStream(MvcResult mvcResult)
