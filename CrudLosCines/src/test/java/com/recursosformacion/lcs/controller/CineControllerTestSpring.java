@@ -74,7 +74,7 @@ class CineControllerTestSpring {
 		when(cDao.leerUno(1L)).thenReturn(cineOptional);
 		
 		// Verificar
-		MvcResult result = mvc.perform(get("/api/cine/1"))
+		mvc.perform(get("/api/cine/1"))
 //				.andDo(MockMvcResultHandlers.print())
 				.andExpect(status().isOk())
                 .andExpect(jsonPath("$."+Constantes.STATUS, is(1)))
@@ -82,7 +82,7 @@ class CineControllerTestSpring {
                 .andExpect(jsonPath("$."+Constantes.DATOS+".ci_calle", is(cine.getCi_calle())))
                 .andExpect(jsonPath("$."+Constantes.DATOS+".ci_barrio", is(cine.getCi_barrio())))
                 .andExpect(jsonPath("$."+Constantes.DATOS+".ci_capacidad", is(cine.getCi_capacidad())))
-                .andReturn();
+                ;
 		
 	}
 	
@@ -101,25 +101,24 @@ class CineControllerTestSpring {
 		List<Cine> lcine = Arrays.asList(this.cine);
 		when(cDao.listAll())
 			.thenReturn(lcine);
-		MvcResult result =  mvc.perform(get("/api/cine"))
+		mvc.perform(get("/api/cine"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$."+Constantes.STATUS, is(1)))
                 .andExpect(jsonPath("$."+Constantes.DATOS+"[0].ci_nombre", is(cine.getCi_nombre())))
                 .andExpect(jsonPath("$."+Constantes.DATOS+"[0].ci_calle", is(cine.getCi_calle())))
                 .andExpect(jsonPath("$."+Constantes.DATOS+"[0].ci_barrio", is(cine.getCi_barrio())))
                 .andExpect(jsonPath("$."+Constantes.DATOS+"[0].ci_capacidad", is(cine.getCi_capacidad())))
-                .andReturn();	
+                ;	
 	}
 	
 	@Test
 	void leerTodosError() throws Exception {
 		List<Cine> lista = new ArrayList<Cine>();
 		when(cDao.listAll()).thenReturn(lista);
-		MvcResult result =  mvc.perform(get("/api/cine"))
+		mvc.perform(get("/api/cine"))
 			      .andExpect(status().is4xxClientError())
 			      .andExpect(jsonPath("$."+Constantes.STATUS, is(0)))
 			      .andExpect(jsonPath("$."+Constantes.MENSAJE, containsString("No existen datos")))
-				.andReturn()
 			      ;
 //				System.out.println(result.getResponse().getContentAsString());
 	}

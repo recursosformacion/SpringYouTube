@@ -79,7 +79,7 @@ public class EntradaService implements IServicio<Entrada, Long> {
 
 	@Override
 	public boolean existsById(Long s) {
-		// TODO Auto-generated method stub
+
 		return false;
 	}
 

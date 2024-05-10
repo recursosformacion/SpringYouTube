@@ -26,9 +26,9 @@ import com.recursosformacion.lcs.model.dto.EntradaDTO;
 import com.recursosformacion.lcs.service.CineService;
 import com.recursosformacion.lcs.service.EntradaService;
 import com.recursosformacion.lcs.util.Constantes;
+import com.recursosformacion.lcs.util.constraint.interfaces.CheckEntradaValidation;
 
 import jakarta.validation.Valid;
-
 
 @CrossOrigin
 @RestController
@@ -38,38 +38,28 @@ public class EntradaController {
 	private final EntradaService cDao;
 
 	private final CineService cDaoCine;
-	
-	private Entrada e;
 
-	EntradaController(EntradaService cDao, CineService cDaoCine){
+	EntradaController(EntradaService cDao, CineService cDaoCine) {
 		this.cDao = cDao;
 		this.cDaoCine = cDaoCine;
-		
+
 	}
 
-	
 	@GetMapping("/{id}")
-	public ResponseEntity<Map<String, Object>> leerUno(@PathVariable("id") String ids) throws ControllerException {
+	public ResponseEntity<Map<String, Object>> leerUno(@CheckEntradaValidation @PathVariable("id") Long id)
+			throws ControllerException {
 		String mensaje = "";
 		Map<String, Object> map = new LinkedHashMap<String, Object>();
-		if (ids != null) {
-			try {
-				Long id = Long.parseLong(ids);
-				Optional<Entrada> entradaDB = (Optional<Entrada>) cDao.leerUno(id);
+		Optional<Entrada> entradaDB = cDao.leerUno(id);
 
-				if (entradaDB.isPresent()) {
-					map.put(Constantes.STATUS, 1);
-					map.put(Constantes.DATOS, entradaDB.get());
-					return new ResponseEntity<>(map, HttpStatus.OK);
-				} else {
-					mensaje = "No existen datos";
-				}
-			} catch (NumberFormatException nfe) {
-				mensaje = "Formato erroneo";
-			}
+		if (entradaDB.isPresent()) {
+			map.put(Constantes.STATUS, 1);
+			map.put(Constantes.DATOS, entradaDB.get());
+			return new ResponseEntity<>(map, HttpStatus.OK);
 		} else {
-			mensaje = "Formato erroneo";
+			mensaje = Constantes.MSJ_NO_EXISTEN_DATOS;
 		}
+
 		throw new ControllerException(mensaje);
 
 	}
@@ -85,25 +75,27 @@ public class EntradaController {
 			map.put(Constantes.DATOS, cat);
 			return new ResponseEntity<>(map, HttpStatus.OK);
 		} else {
-			throw new ControllerException("No existen datos");
+			throw new ControllerException(Constantes.MSJ_NO_EXISTEN_DATOS);
 
 		}
 	}
 
 	@GetMapping("/leerporid/{idCliente}")
-	public ResponseEntity<Map<String, Object>> leerPorId(@PathVariable("idCliente") String id) throws ControllerException {
+	public ResponseEntity<Map<String, Object>> leerPorId(@PathVariable("idCliente") String id)
+			throws ControllerException {
 		Map<String, Object> map = new LinkedHashMap<String, Object>();
 		List<Entrada> entradas = cDao.findByIdCliente(id);
 		if (!entradas.isEmpty()) {
 			map.put(Constantes.STATUS, 1);
 			map.put(Constantes.DATOS, entradas);
 			return new ResponseEntity<>(map, HttpStatus.OK);
-			
+
 		} else {
-			throw new ControllerException("No existen datos");
+			throw new ControllerException(Constantes.MSJ_NO_EXISTEN_DATOS);
 
 		}
 	}
+
 	@GetMapping("/leerporcine/{idCine}")
 	public ResponseEntity<Map<String, Object>> leerporcine(@PathVariable("idCine") Long id) throws ControllerException {
 		Map<String, Object> map = new LinkedHashMap<String, Object>();
@@ -112,16 +104,16 @@ public class EntradaController {
 			map.put(Constantes.STATUS, 1);
 			map.put(Constantes.DATOS, entradas);
 			return new ResponseEntity<>(map, HttpStatus.OK);
-			
+
 		} else {
-			throw new ControllerException("No existen datos para cine " + id);
+			throw new ControllerException(Constantes.MSJ_ERROR_CINE_N + id);
 
 		}
 	}
 
 	@PostMapping
-	public ResponseEntity<Map<String, Object>> alta(@Valid @RequestBody EntradaDTO c  ) 
-									throws DomainException, ControllerException, DAOException { // ID,NOMBRE,DESCRIPCION
+	public ResponseEntity<Map<String, Object>> alta(@Valid @RequestBody EntradaDTO c)
+			throws DomainException, ControllerException, DAOException { // ID,NOMBRE,DESCRIPCION
 		Map<String, Object> map = new LinkedHashMap<String, Object>();
 		Entrada e = convertirDTO(c);
 		e.setId_entrada(0l);
@@ -133,7 +125,7 @@ public class EntradaController {
 			map.put(Constantes.DATOS, e);
 			return new ResponseEntity<>(map, HttpStatus.OK);
 		} else {
-			throw new ControllerException("Error al hacer la insercion");
+			throw new ControllerException(Constantes.MSJ_ERROR_INSERT);
 		}
 	}
 
@@ -144,47 +136,43 @@ public class EntradaController {
 		Entrada e = convertirDTO(c);
 		if (cDao.update(e)) {
 			map.put(Constantes.STATUS, 1);
-			map.put(Constantes.MENSAJE, "Actualizacion realizada");
+			map.put(Constantes.MENSAJE, Constantes.MSJ_ACTUALIZACION_OK);
 			return new ResponseEntity<>(map, HttpStatus.OK);
 		} else {
-			throw new ControllerException("Error al hacer la modificacion");
-
+			throw new ControllerException(Constantes.MSJ_ERROR_UPDATE);
 		}
 	}
 
 	@DeleteMapping("/{id}")
-	public ResponseEntity<Map<String, Object>> eliminar(@PathVariable("id") String ids) throws ControllerException {
+	public ResponseEntity<Map<String, Object>> eliminar(@CheckEntradaValidation @PathVariable("id") Long id)
+			throws ControllerException {
 		Map<String, Object> map = new LinkedHashMap<String, Object>();
-		if (ids != null) {
-			try {
-				long id = Long.parseLong(ids);
-				Optional<Entrada> entradaDB = cDao.leerUno(id);
-				cDao.deleteById(entradaDB.get().getId_entrada());
-				map.put(Constantes.STATUS, 1);
-				map.put(Constantes.MENSAJE, "Registro borrado");
-				return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
-			} catch (Exception ex) {
-				throw new ControllerException("Error al borrar");
 
-			}
+		try {
+			cDao.deleteById(id);
+			map.put(Constantes.STATUS, 1);
+			map.put(Constantes.MENSAJE, Constantes.MSJ_ELIMINACION_OK);
+			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
+		} catch (Exception ex) {
+			throw new ControllerException(Constantes.MSJ_ERROR_DELETE);
 		}
-		throw new ControllerException("No existe registro al borrar");
+
 	}
 
-	public Entrada convertirDTO(EntradaDTO d) throws ControllerException {
+	public Entrada convertirDTO(EntradaDTO entradaDTO)  {
 
-		this.e = new Entrada();
-		if (Objects.isNull(d.getId_entrada())) {
-			d.setId_entrada(0L);
+		Entrada entrada = new Entrada();
+		if (Objects.isNull(entradaDTO.getId_entrada())) {
+			entradaDTO.setId_entrada(0L);
 		}
-		e.setId_entrada(d.getId_entrada());
-		e.setEnt_fila(d.getEnt_fila());
-		e.setEnt_numero(d.getEnt_numero());
-		e.setEnt_fecha_str(d.getEnt_fecha_str());
-		e.setIdCliente(d.getIdCliente());
-		e.setEntCine(d.getEntCine());
-		
-		return e;
+		entrada.setId_entrada(entradaDTO.getId_entrada());
+		entrada.setEnt_fila(entradaDTO.getEnt_fila());
+		entrada.setEnt_numero(entradaDTO.getEnt_numero());
+		entrada.setEnt_fecha_str(entradaDTO.getEnt_fecha_str());
+		entrada.setIdCliente(entradaDTO.getIdCliente());
+		entrada.setEntCine(entradaDTO.getEntCine());
+
+		return entrada;
 	}
 
 }

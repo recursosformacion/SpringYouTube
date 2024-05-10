@@ -44,7 +44,7 @@ public class CineService implements IServicio<Cine, Long> {
 		Cine cine = validateInput(c);
 		List<Long> list_entradas = cine.getCi_lista_entradas();
 		if (Rutinas.isEmptyOrNull(list_entradas)) {		
-			list_entradas = new ArrayList<Long>();
+			list_entradas = new ArrayList<>();
 		}
 		
 		cine.setCi_lista_entradas(list_entradas);
@@ -106,7 +106,7 @@ public class CineService implements IServicio<Cine, Long> {
 		return cineRepository.findAllCineProjectionNombre();
 	}
 
-	public boolean addEntrada(Entrada entrada) throws DomainException, DAOException {
+	public boolean addEntrada(Entrada entrada) throws  DAOException {
 
 		Optional<Cine> cineDBO = cineRepository.findById(entrada.getEntCine());
 		if (cineDBO.isEmpty()) {
