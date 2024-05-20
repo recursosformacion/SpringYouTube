@@ -9,6 +9,7 @@ Insert into CINE (ID_CINE,CI_NOMBRE,CI_CALLE,CI_BARRIO,CI_CAPACIDAD) values (16,
 
 INSERT INTO Entrada (id_entrada, ent_fecha, ent_fila, ent_numero, id_cliente, ent_cine) VALUES (11, '2024-01-01' , 5, 10, '12345678Z', 10);
 INSERT INTO Entrada (id_entrada, ent_fecha, ent_fila, ent_numero, id_cliente, ent_cine) VALUES (12, '2024-02-01', 6, 11, '23456789E', 10);
-INSERT INTO Entrada (id_entrada, ent_fecha, ent_fila, ent_numero, id_cliente, ent_cine) VALUES (13, '2024-03-01', 7, 12, '34567890R', 12);
-INSERT INTO Entrada (id_entrada, ent_fecha, ent_fila, ent_numero, id_cliente, ent_cine) VALUES (14, '2024-04-01', 8, 13, '45678901T', 12);
-INSERT INTO Entrada (id_entrada, ent_fecha, ent_fila, ent_numero, id_cliente, ent_cine) VALUES (15, '2024-05-01', 9, 14, '56789012A', 13);
+INSERT INTO Entrada (id_entrada, ent_fecha, ent_fila, ent_numero, id_cliente, ent_cine) VALUES (13, '2024-02-01', 6, 11, '45678901T', 10);
+INSERT INTO Entrada (id_entrada, ent_fecha, ent_fila, ent_numero, id_cliente, ent_cine) VALUES (14, '2024-03-01', 7, 12, '34567890R', 12);
+INSERT INTO Entrada (id_entrada, ent_fecha, ent_fila, ent_numero, id_cliente, ent_cine) VALUES (15, '2024-04-01', 8, 13, '45678901T', 12);
+INSERT INTO Entrada (id_entrada, ent_fecha, ent_fila, ent_numero, id_cliente, ent_cine) VALUES (16, '2024-05-01', 9, 14, '56789012A', 13);

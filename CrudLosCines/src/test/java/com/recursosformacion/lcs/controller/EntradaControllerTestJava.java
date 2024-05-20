@@ -62,7 +62,7 @@ class EntradaControllerTestJava {
         when(cDao.leerUno(id)).thenReturn(Optional.of(entrada));
 
         // Ejecutar
-        ResponseEntity<Map<String, Object>> response = entradaController.leerUno(id.toString());
+        ResponseEntity<Map<String, Object>> response = entradaController.leerUno(id);
 
         // Verificar
         assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -167,10 +167,10 @@ class EntradaControllerTestJava {
     @Test
     public void testRaror() throws ControllerException {
         // Preparar
-        String id = "1";
+       Long id = 1L;
         Entrada entrada = new Entrada();
-        entrada.setId_entrada(1L);
-        when(cDao.leerUno(Long.parseLong(id))).thenReturn(Optional.of(entrada));
+        entrada.setId_entrada(id);
+        when(cDao.leerUno(id)).thenReturn(Optional.of(entrada));
 
         // Ejecutar
         ResponseEntity<Map<String, Object>> response = entradaController.eliminar(id);

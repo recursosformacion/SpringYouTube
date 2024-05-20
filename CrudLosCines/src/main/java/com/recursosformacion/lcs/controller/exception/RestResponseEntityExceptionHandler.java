@@ -33,6 +33,7 @@ public class RestResponseEntityExceptionHandler {
 			ControllerException.class,
 			IllegalArgumentException.class, 
 			IllegalStateException.class,
+		    org.springframework.orm.jpa.JpaSystemException.class,
 			jakarta.validation.UnexpectedTypeException.class,
 			org.springframework.dao.DuplicateKeyException.class,
 			org.springframework.web.HttpRequestMethodNotSupportedException.class,

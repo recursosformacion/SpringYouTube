@@ -32,7 +32,7 @@ public class Entrada implements Modelo {
 	@Column(nullable=false)
 	private int ent_numero;
 	
-	@Column(name="id_cliente", nullable=false,length=10)
+	@Column(name="id_cliente", nullable=false,length=12)
 	private String idCliente;
 	
 	@Column(name="ent_cine", nullable=false)

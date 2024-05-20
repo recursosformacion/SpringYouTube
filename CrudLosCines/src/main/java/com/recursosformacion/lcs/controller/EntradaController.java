@@ -48,7 +48,7 @@ public class EntradaController {
 	@GetMapping("/{id}")
 	public ResponseEntity<Map<String, Object>> leerUno(@CheckEntradaValidation @PathVariable("id") Long id)
 			throws ControllerException {
-		String mensaje = "";
+
 		Map<String, Object> map = new LinkedHashMap<String, Object>();
 		Optional<Entrada> entradaDB = cDao.leerUno(id);
 
@@ -57,10 +57,8 @@ public class EntradaController {
 			map.put(Constantes.DATOS, entradaDB.get());
 			return new ResponseEntity<>(map, HttpStatus.OK);
 		} else {
-			mensaje = Constantes.MSJ_NO_EXISTEN_DATOS;
+			throw new ControllerException(Constantes.MSJ_NO_EXISTEN_DATOS);			
 		}
-
-		throw new ControllerException(mensaje);
 
 	}
 

@@ -80,7 +80,7 @@ public class EntradaService implements IServicio<Entrada, Long> {
 	@Override
 	public boolean existsById(Long s) {
 
-		return false;
+		return entradaRepository.existsById(s);
 	}
 
 }
