@@ -77,7 +77,11 @@ class EntradaServiceTest {
 		assertEquals(10, entradaDB.getEnt_numero());
 		assertEquals(11, entradaDB.getId_entrada());
 	}
-
+	
+	@Test
+	void testEntradaPorIdCliente_Exception() {
+        assertTrue(entradaServicio.findByIdCliente("9999").isEmpty());
+	}
 	@Test
 	void testUpdate() throws DomainException, DAOException {
 		entrada.setId_entrada(12l);
@@ -122,6 +126,11 @@ class EntradaServiceTest {
 		assertEquals(entrada11.getEnt_fila(), entradaDB.getEnt_fila());
 		assertEquals(entrada11.getEnt_numero(), entradaDB.getEnt_numero());
 		assertEquals(entrada11.getId_entrada(), entradaDB.getId_entrada());
+	}
+	
+	@Test
+	void testLeerUnoException() {
+		assertFalse(entradaServicio.leerUno(9999l).isPresent());
 	}
 
 	@Test
