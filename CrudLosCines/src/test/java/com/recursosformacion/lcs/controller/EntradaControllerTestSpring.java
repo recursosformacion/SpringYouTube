@@ -1,5 +1,6 @@
 package com.recursosformacion.lcs.controller;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,7 @@ import com.recursosformacion.lcs.service.EntradaService;
 import com.recursosformacion.lcs.util.Constantes;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.contains;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -31,6 +33,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.Matchers.is;
 
 @WebMvcTest(controllers = EntradaController.class)
@@ -46,14 +49,22 @@ class EntradaControllerTestSpring {
     private EntradaService cDao;
     @MockBean
     private CineService cineService;
+        
+    static final String STATUS = "$."+Constantes.STATUS;
+    static final String DATOS = "$."+Constantes.DATOS;
+    static final String MENSAJE = "$."+Constantes.MENSAJE;
+    static final String RUTA = "/api/entrada";
+    static final String RUTAb = "/api/entrada/";
+    static final int NUMERO_REGISTROS = 7;
     
-    @MockBean 
-    Entrada entrada;
+    static final LocalDate AHORA = LocalDate.now();
+    static final LocalDate MANIANA = LocalDate.now().plusDays(1);;
+    static final LocalDate AYER = LocalDate.now().minusDays(1);
     
-    final LocalDate AHORA = LocalDate.now();
-	final LocalDate MANIANA = LocalDate.now().plusDays(1);;
-	final LocalDate AYER = LocalDate.now().minusDays(1);
+    static  String DNI_OK;
+    static  String DNI_ERR;
 	
+    Entrada entrada;
     EntradaDTO entradaOk;
     EntradaDTO entradaErrorDNI;
     EntradaDTO entradaErrorFecha;
@@ -64,33 +75,39 @@ class EntradaControllerTestSpring {
     Optional<Entrada> entradaOptional;
     
     List<Entrada> listaEntradas;
-   
-    @BeforeEach
-	void setup() {
-    	Random random = new Random();
+    
+    @BeforeAll
+	static void init() {
+		System.out.println("Inicio de las pruebas******************************");
+		Random random = new Random();
         int numeroDni = random.nextInt(100000000);
         char letraDniOk = "TRWAGMYFPDXBNJZSQVHLCKE".charAt(numeroDni % 23);
         char letraDniErr = "TRWAGMYFPDXBNJZSQVHLCKE".charAt((numeroDni + 1) % 23);
-        String nDNIOk = String.format("%,d", numeroDni) + "-" + letraDniOk;
-        String nDNIErr = String.format("%,d", numeroDni) + "-" + letraDniErr;
+        DNI_OK = String.format("%,d", numeroDni) + "-" + letraDniOk;
+        DNI_ERR = String.format("%,d", numeroDni) + "-" + letraDniErr;
         
-        System.out.println("DNI:    " + nDNIOk);
-        System.out.println("DNI_Err:" + nDNIErr);
+        System.out.println("DNI:    " + DNI_OK);
+        System.out.println("DNI_Err:" + DNI_ERR);
         
     	System.out.println("Fechas******************************");
     	System.out.println("Ahora: " + AHORA);
     	System.out.println("Mañana:" + MANIANA);
     	System.out.println("Ayer:  " +AYER);
     	System.out.println("Fechas******************************");
+	}
+   
+    @BeforeEach
+	void setup() {
     	
-    	entradaOk = new EntradaDTO(1L, MANIANA.format(Constantes.FORMATO_FECHA_EU), 10, 20, nDNIOk, 10L);
-    	this.entradaErrorDNI = new EntradaDTO(1L, MANIANA.format(Constantes.FORMATO_FECHA_EU), 10, 20, nDNIErr, 10L);
-    	this.entradaErrorFecha = new EntradaDTO(1L, AYER.format(Constantes.FORMATO_FECHA_EU), 10, 20, nDNIOk , 10L);
-    	this.entradaErrorFila = new EntradaDTO(1L, MANIANA.format(Constantes.FORMATO_FECHA_EU), 0, 20, nDNIOk , 10L);
-    	this.entradaErrorNumero = new EntradaDTO(1L, MANIANA.format(Constantes.FORMATO_FECHA_EU), 10, 0, nDNIOk, 10L);
-    	this.entradaErrorCine = new EntradaDTO(1L, MANIANA.format(Constantes.FORMATO_FECHA_EU), 10, 20, nDNIOk , 999L);
     	
-    	this.entrada = new Entrada(1L, MANIANA, 10, 20, nDNIOk , 10L);
+    	entradaOk = new EntradaDTO(1L, MANIANA.format(Constantes.FORMATO_FECHA_EU), 10, 20, DNI_OK, 10L);
+    	this.entradaErrorDNI = new EntradaDTO(1L, MANIANA.format(Constantes.FORMATO_FECHA_EU), 10, 20, DNI_ERR, 10L);
+    	this.entradaErrorFecha = new EntradaDTO(1L, AYER.format(Constantes.FORMATO_FECHA_EU), 10, 20, DNI_OK , 10L);
+    	this.entradaErrorFila = new EntradaDTO(1L, MANIANA.format(Constantes.FORMATO_FECHA_EU), 0, 20, DNI_OK , 10L);
+    	this.entradaErrorNumero = new EntradaDTO(1L, MANIANA.format(Constantes.FORMATO_FECHA_EU), 10, 0, DNI_OK, 10L);
+    	this.entradaErrorCine = new EntradaDTO(1L, MANIANA.format(Constantes.FORMATO_FECHA_EU), 10, 20, DNI_OK , 999L);
+    	
+    	this.entrada = new Entrada(1L, MANIANA, 10, 20, DNI_OK , 10L);
     	this.entradaOptional = Optional.of(entrada);
     	
     	this.listaEntradas = Arrays.asList(entrada, entrada,entrada,entrada,entrada);
@@ -101,31 +118,44 @@ class EntradaControllerTestSpring {
     void testLeerUno() throws Exception {
         String id = "1";
         when(cDao.leerUno(1L)).thenReturn(entradaOptional);
-        mockMvc.perform(get("/api/entrada/" + id)
+        mockMvc.perform(get(RUTAb + id)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.status", is(1)))
+                .andExpect(jsonPath(STATUS, is(1)))
                 .andExpect(jsonPath("$.data.id_entrada", is(1)));
     }
+    
+    @Test
+    void testLeerUno_error() throws Exception {
+        Long id = 1L;
+        when(cDao.leerUno(id)).thenReturn(Optional.empty());
+        mockMvc.perform(get(RUTAb + id)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().is4xxClientError())
+                .andExpect(jsonPath(STATUS, is(0)))
+                .andExpect(jsonPath(MENSAJE, containsString(Constantes.MSJ_NO_EXISTEN_DATOS)));
+    }
+    
+    
 
     @Test
     void testLeerTodos() throws Exception {
     	
     	when(cDao.listAll()).thenReturn(listaEntradas);
-        mockMvc.perform(get("/api/entrada")
+        mockMvc.perform(get(RUTA)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.status", is(1)));
+                .andExpect(jsonPath(STATUS, is(1)));
     }
 
     @Test
     void testLeerPorId() throws Exception {
         String idCliente = "1";
         when(cDao.findByIdCliente(any(String.class))).thenReturn(listaEntradas);
-        mockMvc.perform(get("/api/entrada/leerporid/" + idCliente)
+        mockMvc.perform(get(RUTAb + "leerporid/" + idCliente)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.status", is(1)));
+                .andExpect(jsonPath(STATUS, is(1)));
     }
 
     @Test
@@ -134,22 +164,24 @@ class EntradaControllerTestSpring {
         
         when(cDao.findByEntCine(any())).thenReturn(listaEntradas);
 
-        mockMvc.perform(get("/api/entrada/leerporcine/" + idCine)
+        mockMvc.perform(get(RUTAb + "leerporcine/" + idCine)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.status", is(1)));
+                .andExpect(jsonPath(STATUS, is(1)));
     }
 
     @Test
     void testAlta() throws Exception {
         String entradaJson = mapper.writeValueAsString(entradaOk);
+        System.out.println("entradaJson-" + entradaJson);
+        System.out.println("entradaOk-" + entradaOk);
         when(cDao.insert(any(Entrada.class))).thenReturn(entrada);
 
-        mockMvc.perform(post("/api/entrada")
+        mockMvc.perform(post(RUTA)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(entradaJson))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.status", is(1)))
+                .andExpect(jsonPath(STATUS, is(1)))
                 .andExpect(jsonPath("$.data.id_entrada", is(1)));
     }
     
@@ -157,7 +189,7 @@ class EntradaControllerTestSpring {
     void comprobarDeteccionDniErroneo() throws Exception {
     	String entradaJson = mapper.writeValueAsString(entradaErrorDNI);
     	
-	    this.mockMvc.perform(MockMvcRequestBuilders.post("/api/entrada")
+	    this.mockMvc.perform(MockMvcRequestBuilders.post(RUTA)
 	    		.accept(MediaType.TEXT_HTML)
 	    		.content(entradaJson))
 	            .andExpect(status().is4xxClientError());
@@ -168,12 +200,12 @@ class EntradaControllerTestSpring {
         String entradaJson =  mapper.writeValueAsString(entradaOk);
         when(cDao.update(any(Entrada.class))).thenReturn(true);
 
-        mockMvc.perform(put("/api/entrada")
+        mockMvc.perform(put(RUTA)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(entradaJson))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.status", is(1)))
-                .andExpect(jsonPath("$.message", is("Actualizacion realizada")));
+                .andExpect(jsonPath(STATUS, is(1)))
+                .andExpect(jsonPath(MENSAJE, is(Constantes.MSJ_ACTUALIZACION_OK)));
     }
 
     @Test
@@ -182,10 +214,10 @@ class EntradaControllerTestSpring {
         when(cDao.leerUno(any(Long.class))).thenReturn(Optional.of(entrada));
         when(cDao.deleteById(any(Long.class))).thenReturn(true);
 
-        mockMvc.perform(delete("/api/entrada/" + id)
+        mockMvc.perform(delete(RUTAb + id)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.status", is(1)))
-                .andExpect(jsonPath("$.message", is("Registro borrado")));
+                .andExpect(jsonPath(STATUS, is(1)))
+                .andExpect(jsonPath(MENSAJE, is(Constantes.MSJ_ELIMINACION_OK)));
     }
 }

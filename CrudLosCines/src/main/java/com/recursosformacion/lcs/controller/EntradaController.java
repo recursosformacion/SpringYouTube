@@ -46,7 +46,7 @@ public class EntradaController {
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity<Map<String, Object>> leerUno(@CheckEntradaValidation @PathVariable("id") Long id)
+	public ResponseEntity<Map<String, Object>> leerUno(@Valid @CheckEntradaValidation @PathVariable("id") Long id)
 			throws ControllerException {
 
 		Map<String, Object> map = new LinkedHashMap<String, Object>();
