@@ -6,6 +6,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
 public class Pelicula implements Modelo {
@@ -13,11 +15,14 @@ public class Pelicula implements Modelo {
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE)
 	private long id_pelicula;
+	@NotNull
 	private String pe_titulo;
+
 	private int pe_identificador;
+
+	
 	public Pelicula() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 	public Pelicula(long id_pelicula, String pe_titulo, int pe_identificador) {
 		super();
@@ -25,6 +30,7 @@ public class Pelicula implements Modelo {
 		this.pe_titulo = pe_titulo;
 		this.pe_identificador = pe_identificador;
 	}
+	
 	public long getId_pelicula() {
 		return id_pelicula;
 	}

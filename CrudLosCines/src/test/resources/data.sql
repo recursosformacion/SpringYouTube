@@ -13,3 +13,7 @@ INSERT INTO Entrada (id_entrada, ent_fecha, ent_fila, ent_numero, id_cliente, en
 INSERT INTO Entrada (id_entrada, ent_fecha, ent_fila, ent_numero, id_cliente, ent_cine) VALUES (14, '2024-03-01', 7, 12, '34567890R', 12);
 INSERT INTO Entrada (id_entrada, ent_fecha, ent_fila, ent_numero, id_cliente, ent_cine) VALUES (15, '2024-04-01', 8, 13, '45678901T', 12);
 INSERT INTO Entrada (id_entrada, ent_fecha, ent_fila, ent_numero, id_cliente, ent_cine) VALUES (16, '2024-05-01', 9, 14, '56789012A', 13);
+
+INSERT INTO Pelicula (id_pelicula,pe_titulo, pe_idemtoficador) VALUES (20,"La gran pelicula",1);
+INSERT INTO Pelicula (id_pelicula,pe_titulo, pe_idemtoficador) VALUES (21,"La pequeña pelicula",1);
+INSERT INTO Pelicula (id_pelicula,pe_titulo, pe_idemtoficador) VALUES (22,"La mediana pelicula",2);

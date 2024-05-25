@@ -7,12 +7,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import java.time.LocalDate;
 import java.util.List;
 
 import com.recursosformacion.lcs.repository.IEntrada;
-import com.recursosformacion.lcs.service.interfaces.IServicio;
 import com.recursosformacion.lcs.exception.DAOException;
 import com.recursosformacion.lcs.exception.DomainException;
 import com.recursosformacion.lcs.persistence.entity.Entrada;

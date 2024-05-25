@@ -1,58 +1,51 @@
 package com.recursosformacion.lcs.service;
 
-import java.util.List;
 import java.util.Optional;
+
+import org.springframework.stereotype.Service;
 
 import com.recursosformacion.lcs.exception.DAOException;
 import com.recursosformacion.lcs.exception.DomainException;
 import com.recursosformacion.lcs.persistence.entity.Pelicula;
 import com.recursosformacion.lcs.repository.IPelicula;
-import com.recursosformacion.lcs.service.interfaces.IServicio;
+import com.recursosformacion.lcs.service.interfaces.IServicioMas;
 
-public class PeliculaService implements IServicio<Pelicula, Long>{
+@Service
+public class PeliculaService extends IServicioMas<Pelicula, Long, IPelicula>{
 
-	private final IPelicula peliculaRepository;
+	private final IPelicula cDao;
 	
 	PeliculaService(IPelicula peliculaRepository){
-		this.peliculaRepository = peliculaRepository;
+		super(peliculaRepository);
+		this.cDao = peliculaRepository;
+	}
+	
+	
+	@Override
+	public Pelicula update(Pelicula peli) throws DomainException, DAOException {
+		Optional<Pelicula> dbo = cDao.findById(peli.getId_pelicula());
+		if (dbo.isEmpty()) {
+			throw new DAOException("El registro:" + peli.getId_pelicula() + ", ya no existe");
+		}
+		return cDao.save(peli);
 	}
 	
 	@Override
-	public Pelicula insert(Pelicula t) throws DomainException, DAOException {
+	public Pelicula patch(Pelicula peli) throws DomainException, DAOException {
+		Optional<Pelicula> dbo = cDao.findById(peli.getId_pelicula());
+		if (dbo.isEmpty()) {
+			throw new DAOException("El registro:" + peli.getId_pelicula() + ", ya no existe");
+		}
+		Pelicula peliDbo = dbo.get();
+		if (peli.getPe_titulo() != null) {
+			peliDbo.setPe_titulo(peli.getPe_titulo());
+		}
+		if (peli.getPe_identificador() != 0) {
+			peliDbo.setPe_identificador(peliDbo.getPe_identificador());
+		}
 		
-		return peliculaRepository.save(t);
+		return cDao.save(peliDbo);
 	}
 
-	@Override
-	public boolean update(Pelicula t) throws DomainException, DAOException {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean deleteById(Long s) throws DAOException {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public List<Pelicula> listAll() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Optional<Pelicula> leerUno(Long s) {
-		// TODO Auto-generated method stub
-		return Optional.empty();
-	}
-
-	@Override
-	public boolean existsById(Long s) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	//create a method that returns a list of movies
 	
 }
