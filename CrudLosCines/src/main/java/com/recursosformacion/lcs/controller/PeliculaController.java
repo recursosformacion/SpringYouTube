@@ -108,7 +108,7 @@ public class PeliculaController {
 			throws ConstraintViolationException, ControllerException {
 		Map<String, Object> map = new LinkedHashMap<String, Object>();
 		try {
-			cDao.borrar(id);
+			cDao.borrarPorId(id);
 			map.put(Constantes.STATUS, 1);
 			map.put(Constantes.MENSAJE, "Registro eliminado");
 			return new ResponseEntity<>(map, HttpStatus.OK);

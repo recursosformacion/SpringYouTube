@@ -20,6 +20,11 @@ public class PeliculaService extends IServicioMas<Pelicula, Long, IPelicula>{
 		this.cDao = peliculaRepository;
 	}
 	
+	@Override
+	public Pelicula insert(Pelicula peli) throws DomainException, DAOException {
+		peli.setId_pelicula(0);
+		return cDao.save(peli);
+	}
 	
 	@Override
 	public Pelicula update(Pelicula peli) throws DomainException, DAOException {
@@ -33,6 +38,7 @@ public class PeliculaService extends IServicioMas<Pelicula, Long, IPelicula>{
 	@Override
 	public Pelicula patch(Pelicula peli) throws DomainException, DAOException {
 		Optional<Pelicula> dbo = cDao.findById(peli.getId_pelicula());
+		
 		if (dbo.isEmpty()) {
 			throw new DAOException("El registro:" + peli.getId_pelicula() + ", ya no existe");
 		}
@@ -41,11 +47,20 @@ public class PeliculaService extends IServicioMas<Pelicula, Long, IPelicula>{
 			peliDbo.setPe_titulo(peli.getPe_titulo());
 		}
 		if (peli.getPe_identificador() != 0) {
-			peliDbo.setPe_identificador(peliDbo.getPe_identificador());
+			peliDbo.setPe_identificador(peli.getPe_identificador());
 		}
-		
 		return cDao.save(peliDbo);
 	}
+	
+	@Override
+	public boolean borrar(Pelicula peli) throws DAOException {
+        Optional<Pelicula> dbo = cDao.findById(peli.getId_pelicula());
+        if (dbo.isEmpty()) {
+            throw new DAOException("El registro:" + peli.getId_pelicula() + ", ya no existe");
+        }
+        cDao.delete(peli);
+        return true;
+    }
 
 	
 }
