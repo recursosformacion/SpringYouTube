@@ -35,15 +35,15 @@ import jakarta.validation.Valid;
 public class PeliculaController {
 
 	private final PeliculaService cDao;
+	private Map<String, Object> map = new LinkedHashMap<String, Object>();
 
 	public PeliculaController(PeliculaService peliculaService) {
 		this.cDao = peliculaService;
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity<Map<String, Object>> leerUno(@CheckPeliculaValidation @PathVariable("id") Long id)
-			throws ConstraintViolationException, ControllerException {
-		Map<String, Object> map = new LinkedHashMap<String, Object>();
+	public ResponseEntity<Map<String, Object>> leerUno(@CheckPeliculaValidation @PathVariable("id") Long id){
+		map.clear();
 		Optional<Pelicula> peli = cDao.leerUno(id);
 		map.put(Constantes.STATUS, 1);
 		map.put(Constantes.DATOS, peli.get());
@@ -52,8 +52,7 @@ public class PeliculaController {
 
 	@GetMapping({ "", "/" })
 	public ResponseEntity<Map<String, Object>> leerTodos() throws ControllerException {
-
-		Map<String, Object> map = new LinkedHashMap<String, Object>();
+		map.clear();
 		List<Pelicula> pelis = cDao.listarTodos();
 		if (!pelis.isEmpty()) {
 			map.put(Constantes.STATUS, 1);
@@ -66,8 +65,8 @@ public class PeliculaController {
 
 	@PostMapping
 	public ResponseEntity<Map<String, Object>> alta(@Valid @RequestBody Pelicula p)
-			throws DomainException, ControllerException, DAOException { // ID,NOMBRE,DESCRIPCION
-		Map<String, Object> map = new LinkedHashMap<String, Object>();
+			throws DomainException, ControllerException, DAOException { 
+		map.clear();
 		p.setId_pelicula(0);
 		try {
 			Pelicula pdb = cDao.insert(p);
@@ -82,7 +81,7 @@ public class PeliculaController {
 	@PutMapping("")
 	public ResponseEntity<Map<String, Object>> update(@Valid @RequestBody Pelicula p)
 			throws ConstraintViolationException, ControllerException {
-		Map<String, Object> map = new LinkedHashMap<String, Object>();
+		map.clear();
 		try {
 			cDao.update(p);
 			map.put(Constantes.STATUS, 1);
@@ -95,8 +94,8 @@ public class PeliculaController {
 
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Map<String, Object>> borrar(@CheckPeliculaValidation @PathVariable("id") Long id)
-			throws ConstraintViolationException, ControllerException {
-		Map<String, Object> map = new LinkedHashMap<String, Object>();
+			throws ControllerException {
+		map.clear();
 		try {
 			cDao.borrarPorId(id);
 			map.put(Constantes.STATUS, 1);
