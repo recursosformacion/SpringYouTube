@@ -59,7 +59,7 @@ public class PeliculaController {
 			map.put(Constantes.DATOS, pelis);
 			return new ResponseEntity<>(map, HttpStatus.OK);
 		} else {
-			throw new ControllerException("No existen datos");
+			throw new ControllerException(Constantes.MSJ_NO_EXISTEN_DATOS);
 		}
 	}
 
@@ -74,7 +74,7 @@ public class PeliculaController {
 			map.put(Constantes.DATOS, pdb);
 			return new ResponseEntity<>(map, HttpStatus.CREATED);
 		} catch (Exception ex) {
-			throw new ControllerException("Error al hacer la insercion " + ex.getMessage());
+			throw new ControllerException(Constantes.MSJ_ERROR_INSERT + ex.getMessage());
 		}
 	}
 
@@ -88,7 +88,7 @@ public class PeliculaController {
 			map.put(Constantes.DATOS, p);
 			return new ResponseEntity<>(map, HttpStatus.OK);
 		} catch (Exception ex) {
-			throw new ControllerException("Error al hacer la actualizacion " + ex.getMessage());
+			throw new ControllerException(Constantes.MSJ_ERROR_UPDATE + ex.getMessage());
 		}
 	}
 
@@ -99,10 +99,10 @@ public class PeliculaController {
 		try {
 			cDao.borrarPorId(id);
 			map.put(Constantes.STATUS, 1);
-			map.put(Constantes.MENSAJE, "Registro eliminado");
+			map.put(Constantes.MENSAJE, Constantes.MSJ_ELIMINACION_OK);
 			return new ResponseEntity<>(map, HttpStatus.OK);
 		} catch (Exception ex) {
-			throw new ControllerException("Error al hacer la eliminacion " + ex.getMessage());
+			throw new ControllerException(Constantes.MSJ_ERROR_DELETE + ex.getMessage());
 		}
 	}
 }
