@@ -41,10 +41,9 @@ import jakarta.validation.constraints.NotNull;
 public class CineController {
 
 	private final CineService cDao;
-	
-	
+
 	private ModelMapper mapper = new ModelMapper();
- 
+
 	CineController(CineService cDao) {
 		this.cDao = cDao;
 	}
@@ -60,7 +59,7 @@ public class CineController {
 			map.put(Constantes.DATOS, cat);
 			return new ResponseEntity<>(map, HttpStatus.OK);
 		} else {
-			throw new ControllerException("No existen datos");
+			throw new ControllerException(Constantes.MSJ_NO_EXISTEN_DATOS);
 		}
 	}
 
@@ -69,48 +68,43 @@ public class CineController {
 			throws ConstraintViolationException, ControllerException {
 		Map<String, Object> map = new LinkedHashMap<String, Object>();
 		Optional<Cine> cineDB = cDao.leerUno(id);
-		if (cineDB.isPresent()) {
-            // Convertir a DTO
-            CineDTO cineDTO = convertToDto(cineDB.get());
-            // Retornar el DTO
-            map.put(Constantes.STATUS, 1);
-            map.put(Constantes.DATOS, cineDTO);
-            return new ResponseEntity<>(map, HttpStatus.OK);
-        } else {
-            throw new ControllerException("No se encontro el registro");
-        }
-		
+		// Convertir a DTO
+		CineDTO cineDTO = convertToDto(cineDB.get());
+		// Retornar el DTO
+		map.put(Constantes.STATUS, 1);
+		map.put(Constantes.DATOS, cineDTO);
+		return new ResponseEntity<>(map, HttpStatus.OK);
+
 	}
 
 	@GetMapping({ "", "/" })
 	public ResponseEntity<Map<String, Object>> leerTodos() throws ControllerException {
 
 		Map<String, Object> map = new LinkedHashMap<String, Object>();
-		List<Cine> cat = cDao.listAll();
-		if (!cat.isEmpty()) {
-			List<CineDTO> cDTO = cat.stream()
+		List<Cine> listaCines = cDao.listarTodos();
+		if (!listaCines.isEmpty()) {
+			List<CineDTO> cDTO = listaCines.stream()
 					.map(cine -> convertToDto(cine))
-					.collect(Collectors.toList());		
+					.collect(Collectors.toList());
 			map.put(Constantes.STATUS, 1);
 			map.put(Constantes.DATOS, cDTO);
 			return new ResponseEntity<>(map, HttpStatus.OK);
 		} else {
-			throw new ControllerException("No existen datos");
+			throw new ControllerException(Constantes.MSJ_NO_EXISTEN_DATOS);
 		}
 	}
 
 	@PostMapping
 	public ResponseEntity<Map<String, Object>> alta(@Valid @RequestBody CineDTO c)
-			throws DomainException, ControllerException, DAOException { // ID,NOMBRE,DESCRIPCION
+			throws DomainException, ControllerException, DAOException { 
 		Map<String, Object> map = new LinkedHashMap<String, Object>();
-		c.setId_cine(0);
 		try {
-			cDao.insert(convertToEntity(c));
+			Cine cineIns = cDao.insert(convertToEntity(c));
 			map.put(Constantes.STATUS, 1);
-			map.put(Constantes.MENSAJE, "Registro salvado");
+			map.put(Constantes.DATOS, convertToDto(cineIns));
 			return new ResponseEntity<>(map, HttpStatus.CREATED);
 		} catch (Exception ex) {
-			throw new ControllerException("Error al hacer la insercion " + ex.getMessage());
+			throw new ControllerException(Constantes.MSJ_ERROR_INSERT + ex.getMessage());
 		}
 	}
 
@@ -118,13 +112,14 @@ public class CineController {
 	public ResponseEntity<Map<String, Object>> modificacion(@Valid @RequestBody CineDTO c)
 			throws ControllerException, DomainException, DAOException {
 		Map<String, Object> map = new LinkedHashMap<String, Object>();
-
-		if (cDao.update(convertToEntity(c))==true) {
+		
+		try {
+			Cine cineDb = cDao.update(convertToEntity(c));
 			map.put(Constantes.STATUS, 1);
-			map.put(Constantes.MENSAJE, "Actualizacion correcta");
+			map.put(Constantes.DATOS, convertToDto(cineDb));
 			return new ResponseEntity<>(map, HttpStatus.OK);
-		} else {
-			throw new ControllerException("Error al hacer la modificacion " + c.toString() );
+		} catch (Exception ex) {
+			throw new ControllerException(Constantes.MSJ_ERROR_UPDATE + ex.getMessage());
 
 		}
 	}
@@ -134,25 +129,25 @@ public class CineController {
 			throws ControllerException {
 		Map<String, Object> map = new LinkedHashMap<String, Object>();
 		try {
-			cDao.deleteById(id);
+			cDao.borrarPorId(id);
 			map.put(Constantes.STATUS, 1);
-			map.put(Constantes.MENSAJE, "Registro borrado");
+			map.put(Constantes.MENSAJE, Constantes.MSJ_ELIMINACION_OK);
 			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 		} catch (Exception ex) {
-			throw new ControllerException("Error al borrar");
+			throw new ControllerException(Constantes.MSJ_ERROR_DELETE + ex.getMessage());
 		}
 	}
 
 	@GetMapping("/test")
-	public  String greeting() {
+	public String greeting() {
 		return "Hello, World";
 	}
-	
+
 	public CineDTO convertToDto(Cine cine) {
 		CineDTO cineDTO = mapper.map(cine, CineDTO.class);
 		return cineDTO;
 	}
-	
+
 	public Cine convertToEntity(CineDTO cineDTO) {
 		Cine cine = mapper.map(cineDTO, Cine.class);
 		return cine;

@@ -8,10 +8,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.recursosformacion.lcs.persistence.entity.Cine;
 import com.recursosformacion.lcs.persistence.entity.Pelicula;
 import com.recursosformacion.lcs.service.PeliculaService;
 import com.recursosformacion.lcs.util.Constantes;
@@ -80,7 +78,7 @@ class PeliculaControllerTestSpring {
 
     @Test
     void testLeerUno() throws Exception {
-        when(cDao.leerUno(1L)).thenReturn(peliculaOptional);
+        when(cDao.leerUno(1L)).thenReturn(peliculaOptional);     
         when(cDao.existe(1L)).thenReturn(true);
         mockMvc.perform(get(RUTAb + 1)
                 .contentType(MediaType.APPLICATION_JSON))
@@ -95,7 +93,7 @@ class PeliculaControllerTestSpring {
     @Test
     void testLeerUno_error() throws Exception {
         Long id = 1L;
-        when(cDao.existe(id)).thenReturn(false);
+        when(cDao.existe(any(Long.class))).thenReturn(false);
         mockMvc.perform(get(RUTAb + id)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is4xxClientError())

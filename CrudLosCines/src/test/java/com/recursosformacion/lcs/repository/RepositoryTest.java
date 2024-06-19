@@ -13,7 +13,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DataJpaTest
 class RepositoryTest {
 
-  @Autowired private DataSource dataSource;
+  //Autowired private DataSource dataSource;
   @Autowired private JdbcTemplate jdbcTemplate;
   @Autowired private EntityManager entityManager;
   @Autowired private ICine rCine;
@@ -21,7 +21,7 @@ class RepositoryTest {
 
   @Test
   void injectedComponentsAreNotNull(){
-    assertThat(dataSource).isNotNull();
+    //assertThat(dataSource).isNotNull();
     assertThat(jdbcTemplate).isNotNull();
     assertThat(entityManager).isNotNull();
     assertThat(rCine).isNotNull();

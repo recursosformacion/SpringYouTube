@@ -66,7 +66,7 @@ public class EntradaController {
 	public ResponseEntity<Map<String, Object>> leerTodos() throws ControllerException {
 
 		Map<String, Object> map = new LinkedHashMap<String, Object>();
-		List<Entrada> cat = cDao.listAll();
+		List<Entrada> cat = cDao.listarTodos();
 
 		if (!cat.isEmpty()) {
 			map.put(Constantes.STATUS, 1);
@@ -82,7 +82,7 @@ public class EntradaController {
 	public ResponseEntity<Map<String, Object>> leerPorId(@PathVariable("idCliente") String id)
 			throws ControllerException {
 		Map<String, Object> map = new LinkedHashMap<String, Object>();
-		List<Entrada> entradas = cDao.findByIdCliente(id);
+		List<Entrada> entradas = cDao.buscarPorIdCliente(id);
 		if (!entradas.isEmpty()) {
 			map.put(Constantes.STATUS, 1);
 			map.put(Constantes.DATOS, entradas);
@@ -97,7 +97,7 @@ public class EntradaController {
 	@GetMapping("/leerporcine/{idCine}")
 	public ResponseEntity<Map<String, Object>> leerporcine(@PathVariable("idCine") Long id) throws ControllerException {
 		Map<String, Object> map = new LinkedHashMap<String, Object>();
-		List<Entrada> entradas = cDao.findByEntCine(id);
+		List<Entrada> entradas = cDao.buscarPorEntCine(id);
 		if (!entradas.isEmpty()) {
 			map.put(Constantes.STATUS, 1);
 			map.put(Constantes.DATOS, entradas);
@@ -113,7 +113,7 @@ public class EntradaController {
 	public ResponseEntity<Map<String, Object>> alta(@Valid @RequestBody EntradaDTO c)
 			throws DomainException, ControllerException, DAOException { // ID,NOMBRE,DESCRIPCION
 		Map<String, Object> map = new LinkedHashMap<String, Object>();
-		Entrada e = convertirDTO(c);
+		Entrada e = Dto2Entrada(c);
 		e.setId_entrada(0l);
 
 		e = cDao.insert(e);
@@ -121,7 +121,7 @@ public class EntradaController {
 			cDaoCine.addEntrada(e);
 			map.put(Constantes.STATUS, 1);
 			map.put(Constantes.DATOS, e);
-			return new ResponseEntity<>(map, HttpStatus.OK);
+			return new ResponseEntity<>(map, HttpStatus.CREATED);
 		} else {
 			throw new ControllerException(Constantes.MSJ_ERROR_INSERT);
 		}
@@ -131,10 +131,11 @@ public class EntradaController {
 	public ResponseEntity<Map<String, Object>> modificacion(@Valid @RequestBody EntradaDTO c)
 			throws ControllerException, DomainException, DAOException {
 		Map<String, Object> map = new LinkedHashMap<String, Object>();
-		Entrada e = convertirDTO(c);
-		if (cDao.update(e)) {
+		Entrada e = Dto2Entrada(c);
+		Entrada eDb = cDao.update(e);
+		if (eDb != null) {
 			map.put(Constantes.STATUS, 1);
-			map.put(Constantes.MENSAJE, Constantes.MSJ_ACTUALIZACION_OK);
+			map.put(Constantes.DATOS, entrada2Dto(eDb));
 			return new ResponseEntity<>(map, HttpStatus.OK);
 		} else {
 			throw new ControllerException(Constantes.MSJ_ERROR_UPDATE);
@@ -147,7 +148,7 @@ public class EntradaController {
 		Map<String, Object> map = new LinkedHashMap<String, Object>();
 
 		try {
-			cDao.deleteById(id);
+			cDao.borrarPorId(id);
 			map.put(Constantes.STATUS, 1);
 			map.put(Constantes.MENSAJE, Constantes.MSJ_ELIMINACION_OK);
 			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
@@ -157,7 +158,7 @@ public class EntradaController {
 
 	}
 
-	public Entrada convertirDTO(EntradaDTO entradaDTO)  {
+	public Entrada Dto2Entrada(EntradaDTO entradaDTO)  {
 
 		Entrada entrada = new Entrada();
 		if (Objects.isNull(entradaDTO.getId_entrada())) {
@@ -171,6 +172,17 @@ public class EntradaController {
 		entrada.setEntCine(entradaDTO.getEntCine());
 
 		return entrada;
+	}
+	
+	public EntradaDTO entrada2Dto(Entrada entrada) {
+		EntradaDTO entradaDTO = new EntradaDTO();
+		entradaDTO.setId_entrada(entrada.getId_entrada());
+		entradaDTO.setEnt_fila(entrada.getEnt_fila());
+		entradaDTO.setEnt_numero(entrada.getEnt_numero());
+		entradaDTO.setEnt_fecha_str(entrada.getEnt_fecha_str());
+		entradaDTO.setIdCliente(entrada.getIdCliente());
+		entradaDTO.setEntCine(entrada.getEntCine());
+		return entradaDTO;
 	}
 
 }

@@ -17,6 +17,6 @@ public class CheckCineValidator implements ConstraintValidator<CheckCineValidati
 	@Override
 	public boolean isValid(Long cine, ConstraintValidatorContext context) {
 		if (cine == null) return true;
-		return cineService.existsById(cine);
+		return cineService.existe(cine);
 	}
 }

@@ -40,25 +40,25 @@ class EntradaServiceTest {
 	}
 
 	@Test
-	void testInsert() {
+	void testInsert() throws DomainException, DAOException {
 
-		entradaServicio.insert(entrada);
+		Entrada eDb = entradaServicio.insert(entrada);
 
-		Entrada entradaDB = entradaServicio.leerUno(entrada.getId_entrada()).get();
+		Entrada entradaDB = entradaServicio.leerUno(eDb.getId_entrada()).get();
 		assertNotNull(entradaDB);
 		assertEquals(entrada.getIdCliente(), entradaDB.getIdCliente());
 		assertEquals(entrada.getEntCine(), entradaDB.getEntCine());
 		assertEquals(entrada.getEnt_fecha(), entradaDB.getEnt_fecha());
 		assertEquals(entrada.getEnt_fila(), entradaDB.getEnt_fila());
 		assertEquals(entrada.getEnt_numero(), entradaDB.getEnt_numero());
-		assertEquals(entrada.getId_entrada(), entradaDB.getId_entrada());
+		assertEquals(eDb.getId_entrada(), entradaDB.getId_entrada());
 
 	}
 
 	@Test
 	void testListAll() {
 
-		List<Entrada> entradas = entradaServicio.listAll();
+		List<Entrada> entradas = entradaServicio.listarTodos();
 		assertNotNull(entradas);
 		assertEquals(entradas.size(), 6);
 
@@ -66,7 +66,7 @@ class EntradaServiceTest {
 
 	@Test
 	void testEntradaPorIdCliente() {
-		Entrada entradaDB = entradaServicio.findByIdCliente("12345678Z").get(0);
+		Entrada entradaDB = entradaServicio.buscarPorIdCliente("12345678Z").get(0);
 		assertNotNull(entradaDB);
 		assertEquals("12345678Z", entradaDB.getIdCliente());
 		assertEquals(10, entradaDB.getEntCine());
@@ -78,23 +78,23 @@ class EntradaServiceTest {
 	
 	@Test
 	void testEntradaPorIdCliente_Exception() {
-        assertTrue(entradaServicio.findByIdCliente("9999").isEmpty());
+        assertTrue(entradaServicio.buscarPorIdCliente("9999").isEmpty());
 	}
 	@Test
 	void testUpdate() throws DomainException, DAOException {
-		entrada.setId_entrada(12l);
-		entradaServicio.insert(entrada);
-		entrada.setEntCine(2l);
-		entradaServicio.update(entrada);
+		entrada.setId_entrada(0L);
+		Entrada eDb = entradaServicio.insert(entrada);
+		eDb.setEntCine(10l);
+		entradaServicio.update(eDb);
 
-		Entrada entradaDB = entradaServicio.leerUno(entrada.getId_entrada()).get();
+		Entrada entradaDB = entradaServicio.leerUno(eDb.getId_entrada()).get();
 		assertNotNull(entradaDB);
 		assertEquals(entrada.getIdCliente(), entradaDB.getIdCliente());
-		assertEquals(entrada.getEntCine(), entradaDB.getEntCine());
+		assertEquals(eDb.getEntCine(), entradaDB.getEntCine());
 		assertEquals(entrada.getEnt_fecha(), entradaDB.getEnt_fecha());
 		assertEquals(entrada.getEnt_fila(), entradaDB.getEnt_fila());
 		assertEquals(entrada.getEnt_numero(), entradaDB.getEnt_numero());
-		assertEquals(entrada.getId_entrada(), entradaDB.getId_entrada());
+		assertEquals(eDb.getId_entrada(), entradaDB.getId_entrada());
 	}
 	
 	@Test
@@ -105,13 +105,13 @@ class EntradaServiceTest {
 
 	@Test
 	void testDeleteById() throws DAOException {
-		entradaServicio.deleteById(12l);
+		entradaServicio.borrarPorId(12l);
 		assertFalse(entradaServicio.leerUno(12l).isPresent());
 	}
 	
 	@Test
 	void testDeleteByIdException() {
-		assertThrows(DAOException.class, () -> entradaServicio.deleteById(9999l));
+		assertThrows(DAOException.class, () -> entradaServicio.borrarPorId(9999l));
 	}
 
 	@Test
@@ -133,7 +133,7 @@ class EntradaServiceTest {
 
 	@Test
 	void testFindByEntCine() {
-		List<Entrada> entradas = entradaServicio.findByEntCine(10l);
+		List<Entrada> entradas = entradaServicio.buscarPorEntCine(10l);
 		assertNotNull(entradas);
 		assertEquals(entradas.size(), 3);
 
@@ -141,18 +141,18 @@ class EntradaServiceTest {
 	
 	@Test
 	void testFindByEntCineException() {
-		assertTrue( entradaServicio.findByEntCine(9999l).isEmpty());
+		assertTrue( entradaServicio.buscarPorEntCine(9999l).isEmpty());
 
 	}
 
 	@Test
 	void testExistsById() {
-		assertTrue(entradaServicio.existsById(14l));
+		assertTrue(entradaServicio.existe(14l));
 	}
 	
 	@Test
 	void testExistsByIdException() {
-		assertFalse(entradaServicio.existsById(9999l));
+		assertFalse(entradaServicio.existe(9999l));
 	}
 
 }

@@ -127,14 +127,14 @@ class CineControllerTestIntegracion {
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().is4xxClientError())
 				.andExpect(jsonPath(STATUS, is(900)))
-				.andExpect(jsonPath("$."+Constantes.MENSAJE+"[\"leerUno.id\"]", containsString("no existe")));
+				.andExpect(jsonPath("$."+Constantes.MENSAJE+"[\"leerUno.id\"]", containsString(Constantes.MSJ_ERROR_CINE_SN)));
 		;
 	}
 
 	@Test
 	@Order(1)
 	void leeTodos_devuelve200() throws Exception {
-		listaTabla("leeTodos_devuelve200");
+//		listaTabla("leeTodos_devuelve200");
 		mvc.perform(get("/api/cine")
 				.accept(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
@@ -173,7 +173,8 @@ class CineControllerTestIntegracion {
 				.content(cine17Json))
 			.andExpect(status().isCreated())
 			.andExpect(jsonPath(STATUS, is(1)))
-			.andExpect(jsonPath(MENSAJE, is("Registro salvado")));
+			.andExpect(jsonPath(DATOS+".ci_nombre").isNotEmpty())
+            .andExpect(jsonPath(DATOS+".ci_barrio").isNotEmpty());
 
 		mvc.perform(get("/api/cine")
 				.accept(MediaType.APPLICATION_JSON))
@@ -227,7 +228,8 @@ class CineControllerTestIntegracion {
 				.content(cineExistenteJson))
 			.andExpect(status().isOk())
 			.andExpect(jsonPath(STATUS, is(1)))
-			.andExpect(jsonPath(MENSAJE, is("Actualizacion correcta")));
+			.andExpect(jsonPath(DATOS+".ci_nombre").isNotEmpty())
+            .andExpect(jsonPath(DATOS+".ci_barrio").isNotEmpty());
 	
 	    mvc.perform(get("/api/cine/12")
                 .contentType(MediaType.APPLICATION_JSON))
@@ -262,7 +264,7 @@ class CineControllerTestIntegracion {
 				.contentType(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
 			.andExpect(jsonPath(STATUS, is(1)))
-			.andExpect(jsonPath(MENSAJE, is("Registro borrado")));
+			.andExpect(jsonPath(MENSAJE, is(Constantes.MSJ_ELIMINACION_OK)));
 
 		id = "10";
 		mvc.perform(get("/api/cine/" + id)
@@ -278,7 +280,7 @@ class CineControllerTestIntegracion {
 		mvc.perform(get("/api/cine/9999999"))
 		.andExpect(status().is4xxClientError())
         .andExpect(jsonPath("$."+Constantes.STATUS, is(900)))
-		.andExpect(jsonPath("$."+Constantes.MENSAJE+"[\"leerUno.id\"]", containsString("no existe")));
+		.andExpect(jsonPath("$."+Constantes.MENSAJE+"[\"leerUno.id\"]", containsString(Constantes.MSJ_ERROR_CINE_SN)));
 
 	
 		
@@ -290,15 +292,15 @@ class CineControllerTestIntegracion {
 		listaTabla("comprueba_error_lista_vacia");
 		for (long i = 11; i <= 16; i++) {
 			mvc.perform(delete("/api/cine/" + i)).andExpect(status().isOk()).andExpect(jsonPath(STATUS, is(1)))
-					.andExpect(jsonPath(MENSAJE, is("Registro borrado")));
+					.andExpect(jsonPath(MENSAJE, is(Constantes.MSJ_ELIMINACION_OK)));
 		}
 		mvc.perform(delete("/api/cine/1")).andExpect(status().isOk()).andExpect(jsonPath(STATUS, is(1)))
-		.andExpect(jsonPath(MENSAJE, is("Registro borrado")));
+		.andExpect(jsonPath(MENSAJE, is(Constantes.MSJ_ELIMINACION_OK)));
 		
 		mvc.perform(get("/api/cine"))
 	      .andExpect(status().is4xxClientError())
 	      .andExpect(jsonPath("$."+Constantes.STATUS, is(0)))
-	      .andExpect(jsonPath("$."+Constantes.MENSAJE, containsString("No existen datos")))
+	      .andExpect(jsonPath("$."+Constantes.MENSAJE, containsString(Constantes.MSJ_NO_EXISTEN_DATOS)))
 		.andReturn()
 	      ;
 		

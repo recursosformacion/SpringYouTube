@@ -14,7 +14,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 
 @Entity
-public class Programa implements Modelo {
+public class Programa implements Modelo<Long> {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -100,6 +100,17 @@ public class Programa implements Modelo {
 	@Override
 	public boolean isValidUpdate() {
 		return true;
+	}
+
+	@Override
+	public Long getId() {
+		return id_programa;
+	}
+
+	@Override
+	public void setId(Long t) {
+		id_programa = t;
+		
 	}
 
 }

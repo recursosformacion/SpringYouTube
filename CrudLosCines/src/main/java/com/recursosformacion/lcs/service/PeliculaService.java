@@ -9,6 +9,7 @@ import com.recursosformacion.lcs.exception.DomainException;
 import com.recursosformacion.lcs.persistence.entity.Pelicula;
 import com.recursosformacion.lcs.repository.IPelicula;
 import com.recursosformacion.lcs.service.interfaces.IServicioMas;
+import com.recursosformacion.lcs.util.Constantes;
 
 @Service
 public class PeliculaService extends IServicioMas<Pelicula, Long, IPelicula>{
@@ -20,27 +21,14 @@ public class PeliculaService extends IServicioMas<Pelicula, Long, IPelicula>{
 		this.cDao = peliculaRepository;
 	}
 	
-	@Override
-	public Pelicula insert(Pelicula peli) throws DomainException, DAOException {
-		peli.setId_pelicula(0);
-		return cDao.save(peli);
-	}
-	
-	@Override
-	public Pelicula update(Pelicula peli) throws DomainException, DAOException {
-		Optional<Pelicula> dbo = cDao.findById(peli.getId_pelicula());
-		if (dbo.isEmpty()) {
-			throw new DAOException("El registro:" + peli.getId_pelicula() + ", ya no existe");
-		}
-		return cDao.save(peli);
-	}
+
 	
 	@Override
 	public Pelicula patch(Pelicula peli) throws DomainException, DAOException {
 		Optional<Pelicula> dbo = cDao.findById(peli.getId_pelicula());
 		
 		if (dbo.isEmpty()) {
-			throw new DAOException("El registro:" + peli.getId_pelicula() + ", ya no existe");
+			throw new DAOException(String.format(Constantes.MSJ_ERROR_REGISTRO_N, peli.getId() ));
 		}
 		Pelicula peliDbo = dbo.get();
 		if (peli.getPe_titulo() != null) {
@@ -52,15 +40,7 @@ public class PeliculaService extends IServicioMas<Pelicula, Long, IPelicula>{
 		return cDao.save(peliDbo);
 	}
 	
-	@Override
-	public boolean borrar(Pelicula peli) throws DAOException {
-        Optional<Pelicula> dbo = cDao.findById(peli.getId_pelicula());
-        if (dbo.isEmpty()) {
-            throw new DAOException("El registro:" + peli.getId_pelicula() + ", ya no existe");
-        }
-        cDao.delete(peli);
-        return true;
-    }
+	
 
 	
 }

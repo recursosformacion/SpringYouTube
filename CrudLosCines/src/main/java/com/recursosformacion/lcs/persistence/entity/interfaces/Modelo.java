@@ -6,7 +6,15 @@ import jakarta.persistence.Transient;
 
 
 
-public interface Modelo {
+public interface Modelo<S extends Long> {
+	
+	@Transient
+	@JsonIgnore
+	public S getId();
+	@Transient
+	@JsonIgnore
+	public void setId(S s);
+
 	
 	@Transient
 	@JsonIgnore
@@ -14,5 +22,7 @@ public interface Modelo {
 	@Transient
 	@JsonIgnore
 	public boolean isValidUpdate();
+
+	
 
 }

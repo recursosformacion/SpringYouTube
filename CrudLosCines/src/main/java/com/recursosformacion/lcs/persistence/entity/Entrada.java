@@ -15,7 +15,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "Entrada")
-public class Entrada implements Modelo {
+public class Entrada implements Modelo<Long> {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -141,6 +141,15 @@ public class Entrada implements Modelo {
 	@Override
 	public boolean isValidUpdate() {
 		return true;
+	}
+	@Override
+	public Long getId() {
+		return  id_entrada;
+	}
+	@Override
+	public void setId(Long t) {
+		 id_entrada=t;
+		
 	}
 	
 }

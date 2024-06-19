@@ -17,6 +17,6 @@ public class CheckEntradaValidator implements ConstraintValidator<CheckEntradaVa
 	@Override
 	public boolean isValid(Long entrada, ConstraintValidatorContext context) {
 		if (entrada == null) return true;
-		return entradaService.existsById(entrada);
+		return entradaService.existe(entrada);
 	}
 }

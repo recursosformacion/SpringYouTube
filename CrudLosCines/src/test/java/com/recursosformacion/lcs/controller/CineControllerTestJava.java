@@ -8,6 +8,7 @@ import static org.mockito.Mockito.any;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -82,13 +83,13 @@ class CineControllerTestJava {
 	@Test
 	void leoExistente_devuelveError() throws ConstraintViolationException, ControllerException {
 		when(cDao.leerUno(1L)).thenReturn(Optional.empty());
-		assertThrows(ControllerException.class,() -> cineController.leerUno(1L));
+		assertThrows(NoSuchElementException.class,() -> cineController.leerUno(1L));
 	}
 	
 	@Test
 	void leeTodos_devuelve200() throws Exception {
 		List<Cine> lcine = Arrays.asList(this.cine);
-		when(cDao.listAll())
+		when(cDao.listarTodos())
 			.thenReturn(lcine);
 		ResponseEntity<Map<String, Object>> response = cineController.leerTodos();
 
@@ -101,18 +102,18 @@ class CineControllerTestJava {
 	@Test
 	void leerTodosError() throws ControllerException {
 		List<Cine> lista = Arrays.asList();
-		when(cDao.listAll()).thenReturn(lista);
+		when(cDao.listarTodos()).thenReturn(lista);
 		assertThrows(ControllerException.class,() -> cineController.leerTodos());		
 	}
 //	
 	@Test
 	void hace_PostOk_devuelve200() throws Exception {
-		when(cDao.insert(any(Cine.class))).thenReturn(this.cine);
+		when(cDao.insert(any(Cine.class))).thenReturn(cineOptional.get());
 		ResponseEntity<Map<String, Object>> response = cineController.alta(cineDTO);
 		
-		assertEquals(HttpStatus.OK, response.getStatusCode());
+		assertEquals(HttpStatus.CREATED, response.getStatusCode());
         assertEquals(1, response.getBody().get(Constantes.STATUS));
-        assertEquals("Registro salvado", response.getBody().get(Constantes.MENSAJE));
+        assertTrue(compararCines(cineDTO, (CineDTO)response.getBody().get(Constantes.DATOS)));
 	}
 //	
 	@Test
@@ -123,34 +124,34 @@ class CineControllerTestJava {
 
 	@Test
 	void hace_PutOk_devuelve200() throws Exception {
-		when(cDao.update(any(Cine.class))).thenReturn(true);
+		when(cDao.update(any(Cine.class))).thenReturn(cine);
 		ResponseEntity<Map<String, Object>> response = cineController.modificacion(cineDTO);
 		
 		assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(1, response.getBody().get(Constantes.STATUS));
-        assertEquals("Actualizacion correcta", response.getBody().get(Constantes.MENSAJE));
+        assertTrue(compararCines(cineDTO, (CineDTO)response.getBody().get(Constantes.DATOS)));
 
 	}
 //	
 	@Test
 	void hace_PutError_devuelveControllerException() throws Exception {
-		when(cDao.update(any(Cine.class))).thenReturn(false);
+		when(cDao.update(any(Cine.class))).thenReturn(null);
 		assertThrows(ControllerException.class, () -> cineController.modificacion(cineDTO));
 	}
 	
 	@Test
 	void hace_DeleteOk_devuelve200() throws Exception {
-		when(cDao.deleteById(1L)).thenReturn(true);
+		when(cDao.borrarPorId(1L)).thenReturn(true);
 		ResponseEntity<Map<String, Object>> response = cineController.eliminar(1L);
 		
 		assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(1, response.getBody().get(Constantes.STATUS));
-        assertEquals("Registro borrado", response.getBody().get(Constantes.MENSAJE));
+        assertEquals(Constantes.MSJ_ELIMINACION_OK, response.getBody().get(Constantes.MENSAJE));
 	}
 	
 	@Test
 	void hace_DeleteError_devuelveControllerException() throws Exception {
-		when(cDao.deleteById(1L)).thenThrow(ConstraintViolationException.class);
+		when(cDao.borrarPorId(1L)).thenThrow(ConstraintViolationException.class);
 		assertThrows(ControllerException.class, () -> cineController.eliminar(1L));
 	
 		

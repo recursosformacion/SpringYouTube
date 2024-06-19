@@ -13,7 +13,7 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Positive;
 
 
-public class CineDTO implements Modelo {
+public class CineDTO {
 
 	
 	private Long id_cine;
@@ -121,15 +121,7 @@ public class CineDTO implements Modelo {
 		this.ci_lista_entradas = ci_lista_entradas;
 	}
 
-	@Override
-	public boolean isValidInsert() {
-		return true;
-	}
 
-	@Override
-	public boolean isValidUpdate() {
-		return true;
-	}
 
 
 	

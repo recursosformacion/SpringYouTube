@@ -10,25 +10,18 @@ import com.recursosformacion.lcs.exception.DomainException;
 import com.recursosformacion.lcs.persistence.entity.Entrada;
 import com.recursosformacion.lcs.repository.IEntrada;
 import com.recursosformacion.lcs.service.interfaces.IServicio;
+import com.recursosformacion.lcs.service.interfaces.IServicioMas;
 import com.recursosformacion.lcs.util.Rutinas;
 
 @Service
-public class EntradaService implements IServicio<Entrada, Long> {
+public class EntradaService extends IServicioMas<Entrada, Long, IEntrada> {
 
 	
 	private final IEntrada entradaRepository;
 	
 	EntradaService(IEntrada entradaRepository){
+		super(entradaRepository);
 		this.entradaRepository = entradaRepository;
-	}
-
-	@Override
-	public Entrada insert(Entrada entrada) {
-		return entradaRepository.save(entrada);
-	}
-	@Override
-	public List<Entrada> listAll() {
-		return  entradaRepository.findAll();
 	}
 	
 	public List<Entrada> entradaPorIdCliente(String id){
@@ -36,7 +29,7 @@ public class EntradaService implements IServicio<Entrada, Long> {
 	}
 
 	@Override
-	public boolean update(Entrada entrada) throws DomainException,DAOException {
+	public Entrada update(Entrada entrada) throws DomainException,DAOException {
 
 		Optional<Entrada> entradaDBO = entradaRepository.findById(entrada.getId_entrada());
 		if (entradaDBO.isEmpty()) {
@@ -50,37 +43,27 @@ public class EntradaService implements IServicio<Entrada, Long> {
 		entradaDB.setEnt_numero(Rutinas.nuevoSiNoVacio(entradaDB.getEnt_numero(), entrada.getEnt_numero()));
 		entradaDB.setEntCine(Rutinas.nuevoSiNoVacio(entradaDB.getEntCine(), entrada.getEntCine()));
 
-		return entradaRepository.save(entradaDB) != null;
-	}
-
-	@Override
-	public boolean deleteById(Long id_entrada) throws DAOException {
-		Optional<Entrada> entradaDBO = entradaRepository.findById(id_entrada);
-		if (entradaDBO.isEmpty()) {
-			throw new DAOException("El registro:" + id_entrada + ", ya no existe");
-		}
-		 entradaRepository.deleteById(id_entrada);
-		 return true;
-
-	}
-
-	@Override
-	public Optional<Entrada> leerUno(Long id) {
-		return entradaRepository.findById(id);		
+		return entradaRepository.save(entradaDB);
 	}
 	
-	public List<Entrada> findByIdCliente(String id){
-		return entradaRepository.findByIdCliente(id);
-	}
-	
-	public List<Entrada> findByEntCine(Long id){
+	public List<Entrada> buscarPorEntCine(Long id){
 		return entradaRepository.findByEntCine(id);
 	}
+	
+	public List<Entrada> buscarPorIdCliente(String id) {
+		return entradaRepository.findByIdCliente(id);
+	}
 
 	@Override
-	public boolean existsById(Long s) {
+	public boolean existe(Long s) {
 
 		return entradaRepository.existsById(s);
+	}
+
+	@Override
+	public Entrada patch(Entrada t) throws DomainException, DAOException {
+		// TODO Esbozo de método generado automáticamente
+		return null;
 	}
 
 }

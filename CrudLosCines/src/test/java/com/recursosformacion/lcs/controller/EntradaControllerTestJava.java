@@ -12,6 +12,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -30,171 +31,141 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-
-
-
 @ExtendWith(MockitoExtension.class)
 class EntradaControllerTestJava {
 
-    @Mock
-    private EntradaService cDao;
+	@Mock
+	private EntradaService cDao;
 
-    @Mock
-    private CineService cineService;
+	@Mock
+	private CineService cineService;
 
-    @Autowired
-    private EntradaController entradaController;
-    
-    final LocalDate AHORA = LocalDate.now();
-   	final LocalDate MANIANA = LocalDate.now().plusDays(1);;
-   	final LocalDate AYER = LocalDate.now().minusDays(1);
+	private EntradaController entradaController;
 
-   	@BeforeEach
+	final LocalDate AHORA = LocalDate.now();
+	final LocalDate MANIANA = LocalDate.now().plusDays(1);;
+	final LocalDate AYER = LocalDate.now().minusDays(1);
+
+	Entrada entrada1;
+	Entrada entrada2;
+	EntradaDTO entradaDTO;
+
+	@BeforeEach
 	void setup() {
-   		        entradaController = new EntradaController(cDao, cineService);
-   		    }
-    @Test
-    void testLeerUno() throws ControllerException {
-        // Preparar
-        Long id = 1L;
-        Entrada entrada = new Entrada();
-        entrada.setId_entrada(id);
-        when(cDao.leerUno(id)).thenReturn(Optional.of(entrada));
+		entradaController = new EntradaController(cDao, cineService);
 
-        // Ejecutar
-        ResponseEntity<Map<String, Object>> response = entradaController.leerUno(id);
+		entrada1 = new Entrada(1L, MANIANA.format(Constantes.FORMATO_FECHA_EU), 10, 20, "56.789.012-A", 10L);
+		entradaDTO = new EntradaDTO(1L, MANIANA.format(Constantes.FORMATO_FECHA_EU), 10, 20, "56.789.012-A" , 10L);
+		entrada2 = new Entrada(2L, MANIANA.format(Constantes.FORMATO_FECHA_EU), 10, 20, "56.789.012-A", 10L);
+	}
 
-        // Verificar
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(1, response.getBody().get(Constantes.STATUS));
-        assertEquals(entrada, response.getBody().get(Constantes.DATOS));
-    }
+	@Test
+	void testLeerUno() throws ControllerException {
+		// Preparar
 
-    @Test
-    public void testLeerTodos() throws ControllerException {
-        // Preparar
-        Entrada entrada1 = new Entrada();
-        entrada1.setId_entrada(1L);
-        Entrada entrada2 = new Entrada();
-        entrada2.setId_entrada(2L);
-        List<Entrada> entradas = Arrays.asList(entrada1, entrada2);
-        when(cDao.listAll()).thenReturn(entradas);
+		when(cDao.leerUno(any(Long.class))).thenReturn(Optional.of(entrada1));
 
-        // Ejecutar
-        ResponseEntity<Map<String, Object>> response = entradaController.leerTodos();
+		// Ejecutar
+		ResponseEntity<Map<String, Object>> response = entradaController.leerUno(entrada1.getId_entrada());
 
-        // Verificar
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(1, response.getBody().get(Constantes.STATUS));
-        assertEquals(entradas, response.getBody().get(Constantes.DATOS));
-    }
+		// Verificar
+		assertEquals(HttpStatus.OK, response.getStatusCode());
+		assertEquals(1, response.getBody().get(Constantes.STATUS));
+		assertEquals(entrada1, response.getBody().get(Constantes.DATOS));
+	}
 
-    @Test
-    public void testLeerPorId() throws ControllerException {
-        // Preparar
-        String id = "1";
-        Entrada entrada1 = new Entrada();
-        entrada1.setId_entrada(1L);
-        Entrada entrada2 = new Entrada();
-        entrada2.setId_entrada(2L);
-        List<Entrada> entradas = Arrays.asList(entrada1, entrada2);
-        when(cDao.findByIdCliente(id)).thenReturn(entradas);
+	@Test
+	public void testLeerTodos() throws ControllerException {
+		// Preparar
 
-        // Ejecutar
-        ResponseEntity<Map<String, Object>> response = entradaController.leerPorId(id);
+		List<Entrada> entradas = Arrays.asList(entrada1, entrada2);
+		when(cDao.listarTodos()).thenReturn(entradas);
 
-        // Verificar
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(1, response.getBody().get(Constantes.STATUS));
-        assertEquals(entradas, response.getBody().get(Constantes.DATOS));
-    }
+		// Ejecutar
+		ResponseEntity<Map<String, Object>> response = entradaController.leerTodos();
 
-    @Test
-    public void testLeerporcine() throws ControllerException {
-        // Preparar
-        Long id = 1L;
-        Entrada entrada1 = new Entrada();
-        entrada1.setId_entrada(1L);
-        Entrada entrada2 = new Entrada();
-        entrada2.setId_entrada(2L);
-        List<Entrada> entradas = Arrays.asList(entrada1, entrada2);
-        when(cDao.findByEntCine(id)).thenReturn(entradas);
+		// Verificar
+		assertEquals(HttpStatus.OK, response.getStatusCode());
+		assertEquals(1, response.getBody().get(Constantes.STATUS));
+		assertEquals(entradas, response.getBody().get(Constantes.DATOS));
+	}
 
-        // Ejecutar
-        ResponseEntity<Map<String, Object>> response = entradaController.leerporcine(id);
+	@Test
+	public void testLeerPorIdCliente() throws ControllerException {
+		// Preparar
+		String id = "56.789.012-A";
+		List<Entrada> entradas = Arrays.asList(entrada1, entrada2);
+		when(cDao.buscarPorIdCliente(any(String.class))).thenReturn(entradas);
 
-        // Verificar
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(1, response.getBody().get(Constantes.STATUS));
-        assertEquals(entradas, response.getBody().get(Constantes.DATOS));
-    }
-    
-    @Test
-    public void testAlta() throws ControllerException, DomainException, DAOException {
-        // Preparar
-    	EntradaDTO entradaDTO = new EntradaDTO(0L, MANIANA.format(Constantes.FORMATO_FECHA_EU), 10, 20, "56.789.012-A" , 10L);
-        Entrada entrada = entradaController.convertirDTO(entradaDTO);
-        when(cDao.insert(any(Entrada.class))).thenReturn(entrada);
+		// Ejecutar
+		ResponseEntity<Map<String, Object>> response = entradaController.leerPorId(id);
 
-        // Ejecutar
-        ResponseEntity<Map<String, Object>> response = entradaController.alta(entradaDTO);
+		// Verificar
+		assertEquals(HttpStatus.OK, response.getStatusCode());
+		assertEquals(1, response.getBody().get(Constantes.STATUS));
+		assertEquals(entradas, response.getBody().get(Constantes.DATOS));
+	}
 
-        // Verificar
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(1, response.getBody().get(Constantes.STATUS));
-        assertEquals(entrada, response.getBody().get(Constantes.DATOS));
-    }
+	@Test
+	public void testLeerporcine() throws ControllerException {
+		// Preparar
+		Long id = 10L;
+		List<Entrada> entradas = Arrays.asList(entrada1, entrada2);
+		when(cDao.buscarPorEntCine(id)).thenReturn(entradas);
 
-    @Test
-    public void testModificacion() throws ControllerException, DomainException, DAOException {
-        // Preparar
-    	EntradaDTO entradaDTO = new EntradaDTO(1L, MANIANA.format(Constantes.FORMATO_FECHA_EU), 10, 20, "56.789.012-A" , 10L);
-        when(cDao.update(any(Entrada.class))).thenReturn(true);
+		// Ejecutar
+		ResponseEntity<Map<String, Object>> response = entradaController.leerporcine(id);
 
-        // Ejecutar
-        ResponseEntity<Map<String, Object>> response = entradaController.modificacion(entradaDTO);
+		// Verificar
+		assertEquals(HttpStatus.OK, response.getStatusCode());
+		assertEquals(1, response.getBody().get(Constantes.STATUS));
+		assertEquals(entradas, response.getBody().get(Constantes.DATOS));
+	}
 
-        // Verificar
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(1, response.getBody().get(Constantes.STATUS));
-        assertEquals("Actualizacion realizada", response.getBody().get(Constantes.MENSAJE));
-    }
+	@Test
+	public void testAlta() throws ControllerException, DomainException, DAOException {
+		// Preparar
 
-    // chat copilot
-    
-    
-    
-    @Test
-    public void testRaror() throws ControllerException {
-        // Preparar
-       Long id = 1L;
-        Entrada entrada = new Entrada();
-        entrada.setId_entrada(id);
-        when(cDao.leerUno(id)).thenReturn(Optional.of(entrada));
+		Entrada entrada = entradaController.Dto2Entrada(entradaDTO);
+		when(cDao.insert(any(Entrada.class))).thenReturn(entrada);
 
-        // Ejecutar
-        ResponseEntity<Map<String, Object>> response = entradaController.eliminar(id);
+		// Ejecutar
+		ResponseEntity<Map<String, Object>> response = entradaController.alta(entradaDTO);
 
-        // Verificar
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(1, response.getBody().get(Constantes.STATUS));
-        assertEquals("Registro borrado", response.getBody().get(Constantes.MENSAJE));
-    }
+		// Verificar
+		assertEquals(HttpStatus.CREATED, response.getStatusCode());
+		assertEquals(1, response.getBody().get(Constantes.STATUS));
+		assertEquals(entrada, response.getBody().get(Constantes.DATOS));
+	}
 
-    @Test
-    public void testConvertirDTO() throws ControllerException {
-        // Preparar
-    	EntradaDTO entradaDTO = new EntradaDTO(1L, MANIANA.format(Constantes.FORMATO_FECHA_EU), 10, 20, "56.789.012-A" , 10L);
+	@Test
+	public void testModificacion() throws ControllerException, DomainException, DAOException {
+		// Preparar
+		// when(cDao.existe(any(Long.class))).thenReturn(true);
+		when(cDao.update(any(Entrada.class))).thenReturn(entrada1);
 
-        // Ejecutar
-        Entrada entrada = entradaController.convertirDTO(entradaDTO);
+		// Ejecutar
+		ResponseEntity<Map<String, Object>> response = entradaController.modificacion(entradaDTO);
 
-        // Verificar
-        assertEquals(entradaDTO.getId_entrada(), entrada.getId_entrada());
-        assertEquals(entradaDTO.getEnt_fila(), entrada.getEnt_fila());
-        assertEquals(entradaDTO.getEnt_numero(), entrada.getEnt_numero());
-        assertEquals(entradaDTO.getEnt_fecha_str(), entrada.getEnt_fecha_str());
-        assertEquals(entradaDTO.getIdCliente(), entrada.getIdCliente());
-        assertEquals(entradaDTO.getEntCine(), entrada.getEntCine());
-    }
+		// Verificar
+		assertEquals(HttpStatus.OK, response.getStatusCode());
+		assertEquals(1, response.getBody().get(Constantes.STATUS));
+		assertEquals(entradaDTO.toString().compareTo((response.getBody().get(Constantes.DATOS).toString())),0);
+	}
+
+	@Test
+	public void testConvertirDTO() throws ControllerException {
+		// Preparar
+
+		// Ejecutar
+		Entrada entrada = entradaController.Dto2Entrada(entradaDTO);
+
+		// Verificar
+		assertEquals(entradaDTO.getId_entrada(), entrada.getId_entrada());
+		assertEquals(entradaDTO.getEnt_fila(), entrada.getEnt_fila());
+		assertEquals(entradaDTO.getEnt_numero(), entrada.getEnt_numero());
+		assertEquals(entradaDTO.getEnt_fecha_str(), entrada.getEnt_fecha_str());
+		assertEquals(entradaDTO.getIdCliente(), entrada.getIdCliente());
+		assertEquals(entradaDTO.getEntCine(), entrada.getEntCine());
+	}
 }

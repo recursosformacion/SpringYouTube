@@ -12,9 +12,13 @@ import com.recursosformacion.lcs.exception.DAOException;
 import com.recursosformacion.lcs.exception.DomainException;
 import com.recursosformacion.lcs.persistence.entity.Cine;
 import com.recursosformacion.lcs.persistence.entity.Entrada;
+import com.recursosformacion.lcs.persistence.entity.Pelicula;
 import com.recursosformacion.lcs.model.dto.CineProjectionNombre;
 import com.recursosformacion.lcs.repository.ICine;
+import com.recursosformacion.lcs.repository.IPelicula;
 import com.recursosformacion.lcs.service.interfaces.IServicio;
+import com.recursosformacion.lcs.service.interfaces.IServicioMas;
+import com.recursosformacion.lcs.util.Constantes;
 import com.recursosformacion.lcs.util.Rutinas;
 
 import jakarta.validation.ConstraintViolationException;
@@ -23,25 +27,19 @@ import jakarta.validation.Valid;
 
 @Service
 @Validated
-public class CineService implements IServicio<Cine, Long> {
+public class CineService extends IServicioMas<Cine, Long, ICine>{
 
 	
 	private final ICine cineRepository;
 
 	public CineService(ICine cineRepository) {
+		super(cineRepository);
 		this.cineRepository = cineRepository;
 	}
 	
-	public Cine validateInput(@Valid Cine cine) throws ConstraintViolationException, DomainException {
-		if (cine == null) {
-			throw new DomainException("El registro no es valido");
-		}
-		return cine;
-	}
-	
 	@Override
-	public Cine insert(Cine c) throws DAOException, ConstraintViolationException, DomainException {
-		Cine cine = validateInput(c);
+	public Cine insert(@Valid Cine cine) throws DAOException, ConstraintViolationException, DomainException {
+
 		List<Long> list_entradas = cine.getCi_lista_entradas();
 		if (Rutinas.isEmptyOrNull(list_entradas)) {		
 			list_entradas = new ArrayList<>();
@@ -51,20 +49,15 @@ public class CineService implements IServicio<Cine, Long> {
 		if (cine.isValidInsert()) {
 			return cineRepository.save(cine);
 		} else {
-			throw new DAOException("El registro no se puede insertar");
+			throw new DAOException(Constantes.MSJ_ERROR_INSERT_VALID);
 		}
 	}
 
-	@Override
-	public List<Cine> listAll() {
-		return cineRepository.findAll();
-	}
 
 	@Override
-	public boolean update(Cine cine) throws DomainException, DAOException {
+	public Cine update(Cine cine) throws DomainException, DAOException {
 
-		Optional<Cine> cineDBO = findById(cine.getId_cine());
-		System.out.println("cineDBO: " + cineDBO);
+		Optional<Cine> cineDBO = leerUno(cine.getId_cine());
 		if (cineDBO.isEmpty()) {
 			throw new DAOException("El registro ya no existe");
 		}
@@ -83,24 +76,13 @@ public class CineService implements IServicio<Cine, Long> {
 			cineDB.setCi_capacidad(cine.getCi_capacidad());
 		}
 		if (cine.isValidUpdate()) {
-			return cineRepository.save(cineDB) != null;
+			return cineRepository.save(cineDB);
 		} else {
 			throw new DAOException("El registro no es valido para actualizacion");
 		}
 	}
 
-	@Override
-	public boolean deleteById(Long id_cine) {
-		cineRepository.deleteById(id_cine);
-		return true;
 
-	}
-
-	@Override
-	public Optional<Cine> leerUno(Long id) {
-		return findById(id);
-
-	}
 	
 	public List<CineProjectionNombre> getAllCineProjectionNombre(){
 		return cineRepository.findAllCineProjectionNombre();
@@ -123,13 +105,13 @@ public class CineService implements IServicio<Cine, Long> {
 		return cineRepository.save(cineDB) != null;
 	}
 
+
+
+
 	@Override
-	public boolean existsById(Long s) {
-		return cineRepository.existsById(s);
-	}
-	
-	public Optional<Cine> findById(Long id) {
-		return cineRepository.findById(id);
+	public Cine patch(Cine t) throws DomainException, DAOException {
+		// TODO Esbozo de método generado automáticamente
+		return null;
 	}
 
 }

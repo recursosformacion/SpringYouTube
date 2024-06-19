@@ -35,12 +35,12 @@ public class CheckEntradaValidatorTest {
     public void testIsValid() {
         Long entradaId = 1L;
 
-        when(entradaService.existsById(entradaId)).thenReturn(true);
+        when(entradaService.existe(entradaId)).thenReturn(true);
 
         boolean result = checkEntradaValidator.isValid(entradaId, context);
 
         assertTrue(result);
-        verify(entradaService).existsById(entradaId);
+        verify(entradaService).existe(entradaId);
     }
 
     @Test
@@ -50,7 +50,7 @@ public class CheckEntradaValidatorTest {
         boolean result = checkEntradaValidator.isValid(entradaId, context);
 
         assertTrue(result);
-        verify(entradaService, never()).existsById(anyLong());
+        verify(entradaService, never()).existe(anyLong());
     }
 }
 

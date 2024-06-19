@@ -70,7 +70,7 @@ class CineControllerTestSpring {
 		
 	@Test
 	void leoExistente_devuelve200() throws Exception {
-		when(cDao.existsById(1L)).thenReturn(true);
+		when(cDao.existe(1L)).thenReturn(true);
 		when(cDao.leerUno(1L)).thenReturn(cineOptional);
 		
 		// Verificar
@@ -89,17 +89,17 @@ class CineControllerTestSpring {
 ////	
 	@Test
 	void leoNoExistente_devuelveError() throws Exception {
-		when(cDao.existsById(1L)).thenReturn(false);
+		when(cDao.existe(1L)).thenReturn(false);
 		mvc.perform(get("/api/cine/1"))
 				.andExpect(status().is4xxClientError())
                 .andExpect(jsonPath("$."+Constantes.STATUS, is(900)))
-				.andExpect(jsonPath("$."+Constantes.MENSAJE+"[\"leerUno.id\"]", containsString("no existe")));
+				.andExpect(jsonPath("$."+Constantes.MENSAJE+"[\"leerUno.id\"]", containsString(Constantes.MSJ_ERROR_CINE_N.substring(0, 10))));
 	}
 	
 	@Test
 	void leeTodos_devuelve200() throws Exception {
 		List<Cine> lcine = Arrays.asList(this.cine);
-		when(cDao.listAll())
+		when(cDao.listarTodos())
 			.thenReturn(lcine);
 		mvc.perform(get("/api/cine"))
                 .andExpect(status().isOk())
@@ -114,11 +114,11 @@ class CineControllerTestSpring {
 	@Test
 	void leerTodosError() throws Exception {
 		List<Cine> lista = new ArrayList<Cine>();
-		when(cDao.listAll()).thenReturn(lista);
+		when(cDao.listarTodos()).thenReturn(lista);
 		mvc.perform(get("/api/cine"))
 			      .andExpect(status().is4xxClientError())
 			      .andExpect(jsonPath("$."+Constantes.STATUS, is(0)))
-			      .andExpect(jsonPath("$."+Constantes.MENSAJE, containsString("No existen datos")))
+			      .andExpect(jsonPath("$."+Constantes.MENSAJE, containsString(Constantes.MSJ_NO_EXISTEN_DATOS)))
 			      ;
 //				System.out.println(result.getResponse().getContentAsString());
 	}
@@ -143,7 +143,7 @@ class CineControllerTestSpring {
 		mvc.perform(get("/api/cine"))
 			      .andExpect(status().is4xxClientError())
 			      .andExpect(jsonPath("$."+Constantes.STATUS, is(0)))
-			      .andExpect(jsonPath("$."+Constantes.MENSAJE, containsString("No existen datos")))
+			      .andExpect(jsonPath("$."+Constantes.MENSAJE, containsString(Constantes.MSJ_NO_EXISTEN_DATOS)))
 			      ;
 	}
 	
@@ -156,7 +156,11 @@ class CineControllerTestSpring {
 		
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$."+Constantes.STATUS, is(1)))
-                .andExpect(jsonPath("$."+Constantes.MENSAJE, containsString("Registro salvado")));
+                .andExpect(jsonPath("$."+Constantes.DATOS+".ci_nombre", is(cine.getCi_nombre())))
+                .andExpect(jsonPath("$."+Constantes.DATOS+".ci_calle", is(cine.getCi_calle())))
+                .andExpect(jsonPath("$."+Constantes.DATOS+".ci_barrio", is(cine.getCi_barrio())))
+                .andExpect(jsonPath("$."+Constantes.DATOS+".ci_capacidad", is(cine.getCi_capacidad())))
+                ;
 	}
 	
 	@Test
@@ -195,56 +199,53 @@ class CineControllerTestSpring {
 
 	@Test
 	void hace_PutOk_devuelve200() throws Exception {
-		when(cDao.update(any(Cine.class))).thenReturn(true);
+		when(cDao.update(any(Cine.class))).thenReturn(cine);
 		mvc.perform(put("/api/cine")
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(cineDTO)))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$."+Constantes.STATUS, is(1)))
-        .andExpect(jsonPath("$."+Constantes.MENSAJE, containsString("Actualizacion correcta")));
+
+        .andExpect(jsonPath("$."+Constantes.DATOS+".ci_nombre", is(cine.getCi_nombre())))
+        .andExpect(jsonPath("$."+Constantes.DATOS+".ci_calle", is(cine.getCi_calle())))
+        .andExpect(jsonPath("$."+Constantes.DATOS+".ci_barrio", is(cine.getCi_barrio())))
+        .andExpect(jsonPath("$."+Constantes.DATOS+".ci_capacidad", is(cine.getCi_capacidad())))
+        ;
 	}
 
-	@Test
-	void hace_PutError_devuelveErrorAlModificar() throws Exception {
-		when(cDao.update(any(Cine.class))).thenReturn(false);
-		mvc.perform(put("/api/cine")
-				.contentType(MediaType.APPLICATION_JSON)
-				.content(objectMapper.writeValueAsString(cineDTO)))
-        .andExpect(status().is4xxClientError())
-        .andExpect(jsonPath("$."+Constantes.STATUS, is(0)))
-        .andExpect(jsonPath("$."+Constantes.MENSAJE, containsString("Error al hacer la modificacion")));
-	}
-
+	
 	@Test
 	void hace_PutError_devuelveErrorNoExiste() throws Exception {
-		when(cDao.findById(any(Long.class))).thenReturn(Optional.empty());
-//		when(cDao.update(any(Cine.class))).thenReturn(false);
+		cine.setId_cine(99999L);
+		cineJson = this.objectMapper.writeValueAsString(cine);
+		when(cDao.existe(any(Long.class))).thenReturn(false);
+		when(cDao.update(any(Cine.class))).thenReturn(null);
 		mvc.perform(put("/api/cine")
 				.contentType(MediaType.APPLICATION_JSON)
-				.content(objectMapper.writeValueAsString(cineDTO)))
+				.content(cineJson))
 		.andDo(MockMvcResultHandlers.print())
         .andExpect(status().is4xxClientError())
         .andExpect(jsonPath("$."+Constantes.STATUS, is(0)))
-        .andExpect(jsonPath("$."+Constantes.MENSAJE, containsString("Error al hacer la modificacion")));
+        .andExpect(jsonPath("$."+Constantes.MENSAJE, containsString(Constantes.MSJ_ERROR_UPDATE)));
 	}
 
 	@Test
 	void hace_DeleteOk_devuelve200() throws Exception {
-		when(cDao.existsById(1L)).thenReturn(true);
-		when(cDao.deleteById(1L)).thenReturn(true);
+		when(cDao.existe(1L)).thenReturn(true);
+		when(cDao.borrarPorId(1L)).thenReturn(true);
 		mvc.perform(delete("/api/cine/1"))
 		        .andExpect(status().isOk())
 		        .andExpect(jsonPath("$."+Constantes.STATUS, is(1)))
-		        .andExpect(jsonPath("$."+Constantes.MENSAJE, containsString("Registro borrado")));
+		        .andExpect(jsonPath("$."+Constantes.MENSAJE, containsString(Constantes.MSJ_ELIMINACION_OK)));
 	}
 	
 	@Test
 	void hace_DeleteError_devuelveControllerException() throws Exception {
-		when(cDao.existsById(1L)).thenReturn(false);
+		when(cDao.existe(1L)).thenReturn(false);
 		mvc.perform(get("/api/cine/1"))
 		.andExpect(status().is4xxClientError())
         .andExpect(jsonPath("$."+Constantes.STATUS, is(900)))
-		.andExpect(jsonPath("$."+Constantes.MENSAJE+"[\"leerUno.id\"]", containsString("no existe")));
+		.andExpect(jsonPath("$."+Constantes.MENSAJE+"[\"leerUno.id\"]", containsString(Constantes.MSJ_ERROR_CINE_SN)));
 
 	
 		

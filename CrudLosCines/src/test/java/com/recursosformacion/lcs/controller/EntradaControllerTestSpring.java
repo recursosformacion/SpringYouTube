@@ -80,11 +80,14 @@ class EntradaControllerTestSpring {
 	static void init() {
 		System.out.println("Inicio de las pruebas******************************");
 		Random random = new Random();
-        int numeroDni = random.nextInt(100000000);
+        int numeroDni = random.nextInt(100000000) + 10000000;
         char letraDniOk = "TRWAGMYFPDXBNJZSQVHLCKE".charAt(numeroDni % 23);
         char letraDniErr = "TRWAGMYFPDXBNJZSQVHLCKE".charAt((numeroDni + 1) % 23);
         DNI_OK = String.format("%,d", numeroDni) + "-" + letraDniOk;
         DNI_ERR = String.format("%,d", numeroDni) + "-" + letraDniErr;
+        if (numeroDni < 10000000) {
+			DNI_OK = "0" + DNI_OK;
+		}
         
         System.out.println("DNI:    " + DNI_OK);
         System.out.println("DNI_Err:" + DNI_ERR);
@@ -111,7 +114,7 @@ class EntradaControllerTestSpring {
     	this.entradaOptional = Optional.of(entrada);
     	
     	this.listaEntradas = Arrays.asList(entrada, entrada,entrada,entrada,entrada);
-    	when(cineService.existsById(10L)).thenReturn(true);
+    	when(cineService.existe(10L)).thenReturn(true);
     }
 
     @Test
@@ -141,7 +144,7 @@ class EntradaControllerTestSpring {
     @Test
     void testLeerTodos() throws Exception {
     	
-    	when(cDao.listAll()).thenReturn(listaEntradas);
+    	when(cDao.listarTodos()).thenReturn(listaEntradas);
         mockMvc.perform(get(RUTA)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -151,7 +154,7 @@ class EntradaControllerTestSpring {
     @Test
     void testLeerPorId() throws Exception {
         String idCliente = "1";
-        when(cDao.findByIdCliente(any(String.class))).thenReturn(listaEntradas);
+        when(cDao.buscarPorIdCliente(any(String.class))).thenReturn(listaEntradas);
         mockMvc.perform(get(RUTAb + "leerporid/" + idCliente)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -162,7 +165,7 @@ class EntradaControllerTestSpring {
     void testLeerPorCine() throws Exception {
         Long idCine = 1L;
         
-        when(cDao.findByEntCine(any())).thenReturn(listaEntradas);
+        when(cDao.buscarPorEntCine(any())).thenReturn(listaEntradas);
 
         mockMvc.perform(get(RUTAb + "leerporcine/" + idCine)
                 .contentType(MediaType.APPLICATION_JSON))
@@ -180,9 +183,9 @@ class EntradaControllerTestSpring {
         mockMvc.perform(post(RUTA)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(entradaJson))
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andExpect(jsonPath(STATUS, is(1)))
-                .andExpect(jsonPath("$.data.id_entrada", is(1)));
+                .andExpect(jsonPath(DATOS + ".id_entrada", is(1)));
     }
     
     @Test
@@ -198,21 +201,26 @@ class EntradaControllerTestSpring {
     @Test
     void testModificacion() throws Exception {
         String entradaJson =  mapper.writeValueAsString(entradaOk);
-        when(cDao.update(any(Entrada.class))).thenReturn(true);
+        when(cDao.update(any(Entrada.class))).thenReturn(entrada);
 
         mockMvc.perform(put(RUTA)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(entradaJson))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath(STATUS, is(1)))
-                .andExpect(jsonPath(MENSAJE, is(Constantes.MSJ_ACTUALIZACION_OK)));
+                .andExpect(jsonPath(DATOS + ".id_entrada", is(1)))
+                .andExpect(jsonPath(DATOS + ".idCliente", is(entrada.getIdCliente())))
+                .andExpect(jsonPath(DATOS + ".ent_fecha_str", is(entrada.getEnt_fecha_str())))
+                .andExpect(jsonPath(DATOS + ".ent_fila", is(entrada.getEnt_fila())))
+                .andExpect(jsonPath(DATOS + ".ent_numero", is(entrada.getEnt_numero())))
+                ;
     }
 
     @Test
     void testEliminar() throws Exception {
         Long id = 1L;
         when(cDao.leerUno(any(Long.class))).thenReturn(Optional.of(entrada));
-        when(cDao.deleteById(any(Long.class))).thenReturn(true);
+        when(cDao.borrarPorId(any(Long.class))).thenReturn(true);
 
         mockMvc.perform(delete(RUTAb + id)
                 .contentType(MediaType.APPLICATION_JSON))

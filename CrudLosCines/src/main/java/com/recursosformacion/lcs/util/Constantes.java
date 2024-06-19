@@ -18,9 +18,13 @@ public class Constantes {
 	public static final String MSJ_INSERCION_OK = "Insercion realizada";
 	public static final String MSJ_ACTUALIZACION_OK = "Actualizacion realizada";
 	public static final String MSJ_ELIMINACION_OK = "Eliminacion realizada";
-	public static final String MSJ_ERROR_DELETE = "Error al hacer la eliminacion";
-	public static final String MSJ_ERROR_UPDATE = "Error al hacer la actualizacion";
-	public static final String MSJ_ERROR_INSERT = "Error al hacer la insercion";
-	public static final String MSJ_ERROR_CINE_N = "No existe el cine indicado, id:";
+	public static final String MSJ_ERROR_DELETE = "Error al hacer la eliminacion - ";
+	public static final String MSJ_ERROR_UPDATE = "Error al hacer la actualizacion - ";
+	public static final String MSJ_ERROR_INSERT = "Error al hacer la insercion - ";
+	public static final String MSJ_ERROR_INSERT_VALID = "El registro no es valido para la insercion";
+	public static final String MSJ_ERROR_CINE_N = "No existe el cine indicado, id: %d";
+	public static final String MSJ_ERROR_CINE_SN = "No existe el cine indicado";
 	public static final String MSJ_ERROR_PELICULA_N = "No existe la pelicula indicada, id:";
+	public static final String MSJ_ERROR_REGISTRO_N = "El registro: %d, ya no existe";
+	public static final String MSJ_ERROR_ENTRADA_SN = "Se ha indicado una entrada que no existe";
 }

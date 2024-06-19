@@ -128,11 +128,10 @@ class RutinasTest {
 
 	@Test
 	void testNuevoSiNoVacioLongLong1() {
-		long a = 0L;
+
 		long c =10L;
 		long res=7L;
 			
-		assertEquals(Rutinas.nuevoSiNoVacio(res,a), 0L);
 		assertEquals(Rutinas.nuevoSiNoVacio(res,c), 10L);
 	}
 

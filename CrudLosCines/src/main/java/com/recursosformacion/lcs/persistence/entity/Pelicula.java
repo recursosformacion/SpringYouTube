@@ -6,11 +6,10 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 
 @Entity
-public class Pelicula implements Modelo {
+public class Pelicula implements Modelo<Long> {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -64,5 +63,15 @@ public class Pelicula implements Modelo {
 	public boolean isValidUpdate() {
 		return true;
 	}
+	@Override
+	public Long getId() {
+		return id_pelicula;
+	}
+	@Override
+	public void setId(Long t) {
+		id_pelicula = t;
+		
+	}
+
 	
 }

@@ -27,11 +27,11 @@ public class CheckEntradaValidatorSpringTest {
 	public void testIsValidWithValidEntrada() {
 		Long entradaId = 1L;
 
-		when(entradaService.existsById(entradaId)).thenReturn(true);
+		when(entradaService.existe(entradaId)).thenReturn(true);
 
 		boolean result = probar(entradaId);
 		assertTrue(result);
-		verify(entradaService).existsById(entradaId);
+		verify(entradaService).existe(entradaId);
 	}
 
 	@Test
@@ -40,18 +40,18 @@ public class CheckEntradaValidatorSpringTest {
 
 		boolean result = probar(entradaId);
 		assertTrue(result);
-		verify(entradaService, never()).existsById(anyLong());
+		verify(entradaService, never()).existe(anyLong());
 	}
 
 	@Test
 	public void testNotValidWidthInvalidData() {
 		Long entradaId = 1L;
 
-		when(entradaService.existsById(entradaId)).thenReturn(false);
+		when(entradaService.existe(entradaId)).thenReturn(false);
 
 		boolean result = probar(entradaId);
 		assertFalse(result);
-		verify(entradaService).existsById(entradaId);
+		verify(entradaService).existe(entradaId);
 	}
 
 	boolean probar(Long entradaId) {
