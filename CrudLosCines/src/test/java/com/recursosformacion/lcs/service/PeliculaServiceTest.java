@@ -68,7 +68,6 @@ class PeliculaServiceTest {
 	void testPatch() throws DomainException, DAOException {
 		Pelicula peli = peliculaServicio.insert(pelicula);
 		peli.setPe_titulo("La pelicula actualizada");
-		peli.setPe_identificador(0);
 		peliculaServicio.patch(peli);
 		Pelicula peliDB = peliculaServicio.leerUno(pelicula.getId_pelicula()).get();
 		assertNotNull(peliDB);

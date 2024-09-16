@@ -77,7 +77,7 @@ public class CineController {
 
 	}
 
-	@GetMapping({ "", "/" })
+	@GetMapping({"/",""})
 	public ResponseEntity<Map<String, Object>> leerTodos() throws ControllerException {
 
 		Map<String, Object> map = new LinkedHashMap<String, Object>();

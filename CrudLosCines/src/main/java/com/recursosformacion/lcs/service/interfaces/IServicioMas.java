@@ -15,18 +15,21 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 
 public abstract class IServicioMas<T extends Modelo<S >, 
-                                   S extends Long, 
+                                   S , 
                                    U extends JpaRepository<T, S >> 
                          implements IServicio<T, S >{
 	
 	U cDao;
+	Class<S> typeS ;
 	
 	protected IServicioMas(final U repo){
 		this.cDao = repo;
 	}
 	
 	public T insert(@Valid final T t) throws DomainException, ConstraintViolationException, DAOException {
-		t.setId((S) Long.valueOf(0));
+		if (typeS == Long.class) {
+			t.setId((S) Long.valueOf(0));
+		}
 		if (t.isValidInsert()) {
 			return cDao.save(t);
 		} else {
@@ -40,8 +43,6 @@ public abstract class IServicioMas<T extends Modelo<S >,
 		}
 		return cDao.save(t);
 	}
-	
-	public abstract T patch(final T t) throws DomainException, DAOException ;
 
 	public boolean borrar(final T t) throws DAOException {
 		if (!existe(t.getId())) {
