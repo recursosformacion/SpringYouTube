@@ -55,6 +55,13 @@
 		</dependency>
 		<!-- fin mapper-->
 
+		<!-- Añadiendo Spring Security -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
+		<!-- fin Spring Security -->
+
 		<!-- La documentacion -->
 		<dependency>
 			<groupId>org.springdoc</groupId>
@@ -62,13 +69,13 @@
 			<version>2.5.0</version>
 		</dependency><!-- fin docu -->
 
+        <!-- Para las pruebas -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
 
-		<!-- Para el test-->
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
