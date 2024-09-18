@@ -121,7 +121,15 @@ public class CineDTO {
 		this.ci_lista_entradas = ci_lista_entradas;
 	}
 
+	
+	public Long getId() {
+		return id_cine;
+	}
 
+	
+	public void setId(Long t) {
+		id_cine = t;		
+	}
 
 
 	

@@ -144,12 +144,16 @@ public class CineController {
 	}
 
 	public CineDTO convertToDto(Cine cine) {
-		CineDTO cineDTO = mapper.map(cine, CineDTO.class);
-		return cineDTO;
+		
+		return mapper.map(cine, CineDTO.class);
 	}
 
 	public Cine convertToEntity(CineDTO cineDTO) {
-		Cine cine = mapper.map(cineDTO, Cine.class);
-		return cine;
+		System.out.println(cineDTO.toString());
+		if (cineDTO.getId() == null) {
+			cineDTO.setId_cine(0);
+		}
+		cineDTO.setId_cine(0);
+		return mapper.map(cineDTO, Cine.class);
 	}
 }
